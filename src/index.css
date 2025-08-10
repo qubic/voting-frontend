@@ -22,6 +22,8 @@
 	--color-muted-foreground: var(--muted-foreground);
 	--color-accent: var(--accent);
 	--color-accent-foreground: var(--accent-foreground);
+	--color-warning: var(--warning);
+	--color-warning-foreground: var(--warning-foreground);
 	--color-destructive: var(--destructive);
 	--color-border: var(--border);
 	--color-input: var(--input);
@@ -42,6 +44,16 @@
 }
 
 :root {
+	/* Mobile Layout */
+	--header-height: 64px;
+	/* Desktop Layout */
+	--header-height-desktop: 64px;
+
+	/* Font Families */
+	--font-brand: 'Orbitron', sans-serif;
+	--font-sans: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'Fira Code', ui-monospace, monospace;
+
 	--radius: 0.625rem;
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.129 0.042 264.695);
@@ -57,6 +69,8 @@
 	--muted-foreground: oklch(0.554 0.046 257.417);
 	--accent: oklch(0.968 0.007 247.896);
 	--accent-foreground: oklch(0.208 0.042 265.755);
+	--warning: oklch(80.157% 0.17044 73.264);
+	--warning-foreground: oklch(0.35 0.15 85);
 	--destructive: oklch(0.577 0.245 27.325);
 	--border: oklch(0.929 0.013 255.508);
 	--input: oklch(0.929 0.013 255.508);
@@ -77,13 +91,16 @@
 }
 
 .dark {
-	--background: oklch(0.129 0.042 264.695);
+	/* --background: oklch(0.129 0.042 264.695); */
+	/* --background: oklch(0.1627 0.0088 264.78); */
+	--background: #101820;
 	--foreground: oklch(0.984 0.003 247.858);
-	--card: oklch(0.208 0.042 265.755);
+	/* --card: oklch(0.208 0.042 265.755); */
+	--card: #151e27;
 	--card-foreground: oklch(0.984 0.003 247.858);
 	--popover: oklch(0.208 0.042 265.755);
 	--popover-foreground: oklch(0.984 0.003 247.858);
-	--primary: oklch(0.929 0.013 255.508);
+	--primary: #61f0fd;
 	--primary-foreground: oklch(0.208 0.042 265.755);
 	--secondary: oklch(0.279 0.041 260.031);
 	--secondary-foreground: oklch(0.984 0.003 247.858);
@@ -91,6 +108,8 @@
 	--muted-foreground: oklch(0.704 0.04 256.788);
 	--accent: oklch(0.279 0.041 260.031);
 	--accent-foreground: oklch(0.984 0.003 247.858);
+	--warning: oklch(80.157% 0.17044 73.264);
+	--warning-foreground: oklch(55.526% 0.14148 52.276);
 	--destructive: oklch(0.704 0.191 22.216);
 	--border: oklch(1 0 0 / 10%);
 	--input: oklch(1 0 0 / 15%);

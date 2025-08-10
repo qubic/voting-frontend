@@ -1,0 +1,5 @@
+export { default as QubicIconDark } from './logo-dark.svg?react'
+export { default as QubicLogoShort } from './logo-text-short.svg?react'
+export { default as QubicIcon } from './logo.svg?react'
+export { default as QvotingDarkLogo } from './q-voting-dark-logo.svg?react'
+export { default as QubicConnectLogo } from './qubic-connect.svg?react'
