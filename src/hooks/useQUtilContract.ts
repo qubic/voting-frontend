@@ -39,7 +39,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 
 			const { encodedParams, inputSize } = encodeParams(
 				params,
-				QUTIL_ABI.getPollsByCreator.inputs
+				QUTIL_ABI.functions.getPollsByCreator.inputs
 			)
 			log('getPollsByCreator - encodedParams', { encodedParams })
 
@@ -56,9 +56,9 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 
 			log('getPollsByCreator - result', { result })
 
-			const decoded = decodeContractResponse(
+			const decoded = await decodeContractResponse(
 				result.data?.responseData || '',
-				QUTIL_ABI.getPollsByCreator.outputs
+				QUTIL_ABI.functions.getPollsByCreator.outputs
 			)
 
 			log('getPollsByCreator - decoded', { decoded })
@@ -84,9 +84,9 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 
 		log('getCurrentPollId - result', { result })
 
-		const decoded = decodeContractResponse(
+		const decoded = await decodeContractResponse(
 			result.data?.responseData || '',
-			QUTIL_ABI.getCurrentPollId.outputs
+			QUTIL_ABI.functions.getCurrentPollId.outputs
 		)
 
 		log('getCurrentPollId - decoded', { decoded })
@@ -104,7 +104,10 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 		async (pollId: number) => {
 			const params = { poll_id: pollId }
 
-			const { encodedParams, inputSize } = encodeParams(params, QUTIL_ABI.getPollInfo.inputs)
+			const { encodedParams, inputSize } = encodeParams(
+				params,
+				QUTIL_ABI.functions.getPollInfo.inputs
+			)
 
 			const result = await querySmartContractMutation({
 				contractIndex: QUTIL_CONFIG.CONTRACT_INDEX,
@@ -115,9 +118,9 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 
 			log('getPollInfo - result', { result })
 
-			const decoded = decodeContractResponse(
+			const decoded = await decodeContractResponse(
 				result.data?.responseData || '',
-				QUTIL_ABI.getPollInfo.outputs
+				QUTIL_ABI.functions.getPollInfo.outputs
 			)
 
 			log('getPollInfo - decoded', { decoded })
@@ -139,7 +142,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 
 			const { encodedParams, inputSize } = encodeParams(
 				params,
-				QUTIL_ABI.getCurrentResult.inputs
+				QUTIL_ABI.functions.getCurrentResult.inputs
 			)
 
 			const result = await querySmartContractMutation({
@@ -151,9 +154,9 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 
 			log('getCurrentResult - result', { result })
 
-			const decoded = decodeContractResponse(
+			const decoded = await decodeContractResponse(
 				result.data?.responseData || '',
-				QUTIL_ABI.getCurrentResult.outputs
+				QUTIL_ABI.functions.getCurrentResult.outputs
 			)
 
 			log('getCurrentResult - decoded', { decoded })

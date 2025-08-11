@@ -1,4 +1,11 @@
-// QUtil Contract Configuration
+/* -----------------------------------
+   Constants
+----------------------------------- */
+
+import { QubicDefinitions } from '@qubic-lib/qubic-ts-library/dist/QubicDefinitions'
+
+export const QUBIC_ID_SIZE = QubicDefinitions.PUBLIC_KEY_LENGTH // 32 bytes
+
 export const NULL_ID = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 
 export const QUTIL_CONFIG = {
@@ -6,7 +13,10 @@ export const QUTIL_CONFIG = {
 	ADDRESS: 'EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF',
 
 	MAX_OPTIONS: 64,
+	MAX_NUM_OF_POLLS: 64, // Maximum number of polls (active + inactive)
 	MAX_ASSETS_PER_POLL: 16,
+	MAX_VOTERS_PER_POLL: 131_072,
+	MAX_VOTERS: 64 * 131_072,
 	VOTE_FEE: 100,
 	POLL_CREATION_FEE: 10_000_000,
 	POLL_GITHUB_URL_MAX_SIZE: 256, // Max string length for poll's GitHub URLs

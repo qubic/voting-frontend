@@ -30,8 +30,8 @@ export default function PollsOverview() {
 			if (result.success) {
 				const { current_poll_id, active_count } = result.data
 				setOverviewData({
-					totalPolls: parseInt(current_poll_id, 10),
-					activePolls: parseInt(active_count, 10)
+					totalPolls: current_poll_id,
+					activePolls: active_count
 				})
 			}
 		} catch (error) {
@@ -54,17 +54,18 @@ export default function PollsOverview() {
 		<Card>
 			<CardHeader>
 				<div className="flex items-center justify-between">
-					<CardTitle className="flex items-center gap-2">
+					<CardTitle className="flex items-center gap-2 text-xl">
 						<TrendingUp className="h-5 w-5" />
 						Polls Overview
 					</CardTitle>
 					<Button
 						variant="outline"
+						className="text-xs"
 						size="sm"
 						onClick={handleRefresh}
 						disabled={isLoading || statsLoading}
 					>
-						<RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+						<RefreshCw className={`mr-1 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
 						Refresh
 					</Button>
 				</div>

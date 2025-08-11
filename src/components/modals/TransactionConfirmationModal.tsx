@@ -11,7 +11,7 @@ import {
 	DialogTitle
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import type { TransactionResponse } from '@/services/transaction.service'
+import type { TransactionResponse } from '@/types'
 
 interface TransactionConfirmationModalProps {
 	isOpen: boolean

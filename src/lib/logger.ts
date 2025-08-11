@@ -11,7 +11,7 @@ const enabledLogs: (typeof LogFeature)[keyof typeof LogFeature][] = [
 	// LogFeature.WALLET_CONNECT_CLIENT,
 	// LogFeature.WALLET_CONNECT_CONTEXT,
 	LogFeature.QUTIL_CONTRACT_HOOK,
-	LogFeature.ENCODERS,
+	// LogFeature.ENCODERS,
 	LogFeature.DECODERS,
 	LogFeature.CREATE_POLL_FORM
 ]

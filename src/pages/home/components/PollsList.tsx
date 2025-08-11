@@ -6,19 +6,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { useQUtilContract } from '@/hooks'
-import type {
-	GetCurrentResultResponse,
-	GetPollInfoResponse,
-	QUtilPollResponse
-} from '@/lib/qubic/schemas'
+import type { GetCurrentResultResponse, GetPollInfoResponse } from '@/lib/qubic/schemas'
 import type { ContractResponse } from '@/lib/qubic/types'
+import type { PollWithResults } from '@/types'
 
 import PollCard from './PollCard'
-
-interface PollWithResults extends QUtilPollResponse {
-	id: number
-	results?: GetCurrentResultResponse
-}
 
 interface PollsListProps {
 	type?: 'active' | 'inactive'
@@ -32,13 +24,14 @@ async function fetchPollWithResults(
 ): Promise<PollWithResults | null> {
 	try {
 		const pollInfo = await getPollInfo(pollId)
-		if (!pollInfo.success || !pollInfo.data || pollInfo.data.found !== '1') {
+		if (!pollInfo.success || !pollInfo.data || pollInfo.data.found !== 1) {
 			return null
 		}
 
 		const poll: PollWithResults = {
 			...pollInfo.data.poll_info,
-			id: pollId
+			id: pollId,
+			poll_link: pollInfo.data.poll_link
 		}
 
 		// Fetch poll results
@@ -56,15 +49,15 @@ async function fetchPollWithResults(
 
 // Helper function to fetch active polls
 async function fetchActivePolls(
-	activePollIds: string[],
-	activeCount: string,
+	activePollIds: number[],
+	activeCount: number,
 	getPollInfo: (id: number) => Promise<ContractResponse<GetPollInfoResponse>>,
 	getCurrentResult: (id: number) => Promise<ContractResponse<GetCurrentResultResponse>>
 ): Promise<PollWithResults[]> {
 	const activePolls: PollWithResults[] = []
 
-	for (let i = 0; i < parseInt(activeCount, 10); i++) {
-		const pollId = parseInt(activePollIds[i], 10)
+	for (let i = 0; i < activeCount; i++) {
+		const pollId = activePollIds[i]
 		const poll = await fetchPollWithResults(pollId, getPollInfo, getCurrentResult)
 		if (poll) {
 			activePolls.push(poll)
@@ -76,18 +69,18 @@ async function fetchActivePolls(
 
 // Helper function to fetch recent inactive polls
 async function fetchInactivePolls(
-	currentPollId: string,
-	activePollIds: string[],
+	currentPollId: number,
+	activePollIds: number[],
 	maxToShow: number,
 	getPollInfo: (id: number) => Promise<ContractResponse<GetPollInfoResponse>>,
 	getCurrentResult: (id: number) => Promise<ContractResponse<GetCurrentResultResponse>>
 ): Promise<PollWithResults[]> {
 	const inactivePolls: PollWithResults[] = []
-	const totalPolls = parseInt(currentPollId, 10)
+	const totalPolls = currentPollId
 
 	for (let i = Math.max(0, totalPolls - maxToShow - 1); i < totalPolls; i++) {
 		// Skip if this poll is already in active polls
-		if (activePollIds.includes(i.toString())) continue
+		if (activePollIds.includes(i)) continue
 
 		const poll = await fetchPollWithResults(i, getPollInfo, getCurrentResult)
 		if (poll) {
@@ -138,8 +131,8 @@ export default function PollsList({ type = 'active' }: PollsListProps) {
 	}, [loadPolls])
 
 	// Filter and prepare data for display
-	const activePolls = polls.filter((poll) => poll.is_active === '1')
-	const inactivePolls = polls.filter((poll) => poll.is_active === '0')
+	const activePolls = polls.filter((poll) => poll.is_active === 1)
+	const inactivePolls = polls.filter((poll) => poll.is_active === 0)
 	const pollsToShow = type === 'active' ? activePolls : inactivePolls
 
 	// UI configuration based on active/inactive state

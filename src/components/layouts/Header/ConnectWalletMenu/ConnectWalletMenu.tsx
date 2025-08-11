@@ -57,7 +57,7 @@ export default function ConnectWalletMenu() {
 						size="sm"
 						color="secondary"
 						variant="outlined"
-						labelClassName="hidden lg:block"
+						labelClassName="hidden lg:block text-foreground"
 						isMenuOpen={showDropdown}
 					/>
 				}

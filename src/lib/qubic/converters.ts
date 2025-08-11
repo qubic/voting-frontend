@@ -68,3 +68,33 @@ export const byteArrayToHexString = (byteArray: Uint8Array) => {
 	const hexString = Array.from(byteArray, (byte) => byte.toString(16).padStart(2, '0')).join('')
 	return hexString
 }
+
+/**
+ * Convert hex string to base32 (Qubic ID format)
+ * This converts a 64-character hex string to a 60-character base32 string
+ */
+export const hexToBase32 = (hexString: string): string => {
+	// Base32 alphabet used by Qubic (A-Z, 2-7)
+	const base32Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
+
+	// Convert hex to binary
+	let binary = ''
+	for (const element of hexString) {
+		const hexChar = element
+		const decimal = parseInt(hexChar, 16)
+		binary += decimal.toString(2).padStart(4, '0')
+	}
+
+	// Convert binary to base32
+	let base32 = ''
+	for (let i = 0; i < binary.length; i += 5) {
+		const chunk = binary.slice(i, i + 5)
+		if (chunk.length === 5) {
+			const decimal = parseInt(chunk, 2)
+			base32 += base32Alphabet[decimal]
+		}
+	}
+
+	// Ensure we get exactly 60 characters
+	return base32.slice(0, 60)
+}

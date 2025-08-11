@@ -1,14 +1,15 @@
 'use client'
 
-import { Users, Vote } from 'lucide-react'
-import { useState } from 'react'
+import { SquareArrowOutUpRightIcon, Users, Vote } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
 	Form,
 	FormControl,
@@ -28,13 +29,8 @@ import {
 	SelectValue
 } from '@/components/ui/select'
 import { useWalletConnect } from '@/hooks'
-import { POLL_TYPE, type QUtilPollResponse, type VoteFormData, VoteSchema } from '@/lib/qubic'
-import type { GetCurrentResultResponse } from '@/lib/qubic/schemas'
-
-interface PollWithResults extends QUtilPollResponse {
-	id: number
-	results?: GetCurrentResultResponse
-}
+import { NULL_ID, POLL_TYPE, QUTIL_CONFIG, type VoteFormData, VoteSchema } from '@/lib/qubic'
+import type { PollWithResults } from '@/types'
 
 interface PollCardProps {
 	poll: PollWithResults
@@ -47,29 +43,44 @@ export default function PollCard({ poll, onVoteSuccess }: PollCardProps) {
 	const { isWalletConnected, selectedAccount, walletClient } = useWalletConnect()
 
 	const form = useForm<VoteFormData>({
-		resolver: zodResolver(VoteSchema)
+		resolver: zodResolver(VoteSchema),
+		defaultValues: {
+			chosen_option: 0,
+			amount: 0,
+			poll_id: poll.id,
+			address: selectedAccount?.address || ''
+		}
 	})
 
+	// Update form when selectedAccount changes
+	useEffect(() => {
+		if (selectedAccount?.address) {
+			form.setValue('address', selectedAccount.address)
+		}
+	}, [selectedAccount?.address, form])
+
 	const isQubicPollType = poll.poll_type === POLL_TYPE.QUBIC
+	const isActive = Boolean(poll.is_active)
 
 	// Use actual poll results data
-	const totalVotes =
-		poll.results?.result?.reduce((sum, votes) => sum + parseInt(votes, 10), 0) || 0
-	const totalVoters =
-		poll.results?.voter_count?.reduce((sum, count) => sum + parseInt(count, 10), 0) || 0
+	const totalVotes = poll.results?.result?.reduce((sum, votes) => sum + votes, 0) || 0
+	const totalVoters = poll.results?.voter_count?.reduce((sum, count) => sum + count, 0) || 0
 
 	// Create poll results array from actual data
-	const pollResults = Array.from({ length: 64 }, (_, i) => {
-		const votes = poll.results?.result?.[i] ? parseInt(poll.results.result[i], 10) : 0
-		const voterCount = poll.results?.voter_count?.[i]
-			? parseInt(poll.results.voter_count[i], 10)
-			: 0
+	// We only show options that has votes or is the first 2 options even if they have 0 votes
+	const pollResults = Array.from({ length: QUTIL_CONFIG.MAX_OPTIONS }, (_, i) => {
+		const votes = poll.results?.result?.[i] || 0
+		const voterCount = poll.results?.voter_count?.[i] || 0
 		return {
 			option: i,
 			votes,
 			voterCount
 		}
-	})
+	}).filter((result, index) => result.votes > 0 || index < 2)
+
+	const pollAllowedAssets = poll.allowed_assets.filter(
+		(asset) => asset.issuer !== NULL_ID && asset.assetName !== 'N/A'
+	)
 
 	const onSubmit = async (data: VoteFormData) => {
 		console.log('onSubmit', data)
@@ -80,6 +91,12 @@ export default function PollCard({ poll, onVoteSuccess }: PollCardProps) {
 
 		if (!walletClient) {
 			alert('Wallet client not initialized')
+			return
+		}
+
+		// Ensure we have valid form data
+		if (data.chosen_option === undefined || data.amount === undefined || !data.address) {
+			alert('Please fill in all required fields')
 			return
 		}
 
@@ -103,20 +120,35 @@ export default function PollCard({ poll, onVoteSuccess }: PollCardProps) {
 	return (
 		<Card>
 			<CardHeader>
-				<div className="flex items-start justify-between">
-					<div className="space-y-2">
-						<CardTitle className="text-lg">{poll.poll_name}</CardTitle>
-						<div className="flex items-center gap-2">
-							<Badge variant={isQubicPollType ? 'default' : 'secondary'}>
-								{isQubicPollType ? 'Qubic' : 'Asset'}
-							</Badge>
-							<Badge variant="outline">
-								Min: {poll.min_amount.toLocaleString()}{' '}
-								{isQubicPollType ? 'QU' : 'Assets'}
-							</Badge>
-							{poll.is_active && <Badge variant="default">Active</Badge>}
-						</div>
-					</div>
+				<CardTitle className="text-lg">{poll.poll_name}</CardTitle>
+				{poll.poll_link && (
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<CardAction>
+								<Button variant="ghost" size="icon" asChild>
+									<a
+										href={poll.poll_link}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<SquareArrowOutUpRightIcon />
+									</a>
+								</Button>
+							</CardAction>
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>View on GitHub</p>
+						</TooltipContent>
+					</Tooltip>
+				)}
+				<div className="flex items-center gap-2">
+					<Badge variant={isQubicPollType ? 'default' : 'secondary'}>
+						{isQubicPollType ? 'Qubic' : 'Asset'}
+					</Badge>
+					<Badge variant="outline">
+						Min: {poll.min_amount.toLocaleString()} {isQubicPollType ? 'QU' : 'Assets'}
+					</Badge>
+					{isActive && <Badge variant="default">Active</Badge>}
 				</div>
 			</CardHeader>
 
@@ -151,25 +183,25 @@ export default function PollCard({ poll, onVoteSuccess }: PollCardProps) {
 					})}
 				</div>
 
-				{!isQubicPollType && poll.allowed_assets.length > 0 && (
+				{!isQubicPollType && pollAllowedAssets.length > 0 && (
 					<div className="space-y-2">
 						<h4 className="text-sm font-semibold">Allowed Assets</h4>
 						<div className="flex flex-wrap gap-1">
-							{poll.allowed_assets.slice(0, 3).map((asset, index) => (
-								<Badge key={index} variant="outline" className="text-xs">
+							{pollAllowedAssets.slice(0, 3).map((asset, index) => (
+								<Badge key={index} variant="outline" className="text-sm">
 									{asset.assetName}
 								</Badge>
 							))}
-							{poll.allowed_assets.length > 3 && (
+							{pollAllowedAssets.length > 3 && (
 								<Badge variant="outline" className="text-xs">
-									+{poll.allowed_assets.length - 3} more
+									+{pollAllowedAssets.length - 3} more
 								</Badge>
 							)}
 						</div>
 					</div>
 				)}
 
-				{poll.is_active && (
+				{isActive && (
 					<div className="border-t pt-4">
 						{!showVoteForm ? (
 							<Button
@@ -201,14 +233,17 @@ export default function PollCard({ poll, onVoteSuccess }: PollCardProps) {
 														</SelectTrigger>
 													</FormControl>
 													<SelectContent>
-														{Array.from({ length: 64 }, (_, i) => (
-															<SelectItem
-																key={i}
-																value={i.toString()}
-															>
-																Option {i}
-															</SelectItem>
-														))}
+														{Array.from(
+															{ length: QUTIL_CONFIG.MAX_OPTIONS },
+															(_, i) => (
+																<SelectItem
+																	key={i}
+																	value={i.toString()}
+																>
+																	Option {i}
+																</SelectItem>
+															)
+														)}
 													</SelectContent>
 												</Select>
 												<FormDescription>
@@ -229,7 +264,7 @@ export default function PollCard({ poll, onVoteSuccess }: PollCardProps) {
 													<Input
 														type="number"
 														placeholder="Enter amount"
-														{...field}
+														value={field.value || ''}
 														onChange={(e) =>
 															field.onChange(Number(e.target.value))
 														}
@@ -245,7 +280,10 @@ export default function PollCard({ poll, onVoteSuccess }: PollCardProps) {
 
 									<div className="bg-muted rounded-lg p-3">
 										<p className="text-muted-foreground text-sm">
-											Voting fee: <Badge variant="secondary">100 QU</Badge>
+											Voting fee:{' '}
+											<Badge variant="secondary">
+												{QUTIL_CONFIG.VOTE_FEE} QU
+											</Badge>
 										</p>
 									</div>
 

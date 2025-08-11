@@ -7,12 +7,22 @@ import { POLL_TYPE } from './types'
 // PRIMITIVE SCHEMAS - Reusable building blocks
 // ============================================================================
 
-// QubicId: 60-char uppercase base32 (A-Z, 2-7, 0-9)
-export const QubicIdSchema = z
-	.string()
-	.length(60, 'QubicId must be exactly 60 characters')
-	.regex(/^[A-Z0-9]{60}$/, 'QubicId must be uppercase base32 (A-Z, 0-9), exactly 60 characters')
+// QubicId: 60-char uppercase base32 (A-Z, 2-7, 0-9) or hex string
+export const QubicIdSchema = z.union([
+	z
+		.string()
+		.length(60, 'QubicId must be exactly 60 characters')
+		.regex(
+			/^[A-Z0-9]{60}$/,
+			'QubicId must be uppercase base32 (A-Z, 0-9), exactly 60 characters'
+		),
+	z.string().regex(/^[a-fA-F0-9]{64}$/, 'QubicId must be a 64-character hex string')
+])
 export type QubicIdSchema = z.infer<typeof QubicIdSchema>
+
+// UInt64: unsigned integer (used for contract responses)
+export const UInt64Schema = z.number().int().min(0, 'Must be a non-negative integer')
+export type UInt64Schema = z.infer<typeof UInt64Schema>
 
 // UInt64Str: stringified unsigned integer (used for amounts, counts, IDs)
 export const UInt64StrSchema = z
@@ -20,11 +30,19 @@ export const UInt64StrSchema = z
 	.regex(/^\d+$/, 'Must be a stringified unsigned integer (uint64)')
 export type UInt64StrSchema = z.infer<typeof UInt64StrSchema>
 
+// Int64: signed integer (used for contract responses)
+export const Int64Schema = z.number().int()
+export type Int64Schema = z.infer<typeof Int64Schema>
+
 // Int64Str: stringified signed integer
 export const Int64StrSchema = z
 	.string()
 	.regex(/^-?\d+$/, 'Must be a stringified signed integer (int64)')
 export type Int64StrSchema = z.infer<typeof Int64StrSchema>
+
+// Boolean: 0 = false, 1 = true (used for contract responses)
+export const BooleanNumSchema = z.union([z.literal(0), z.literal(1)])
+export type BooleanNumSchema = z.infer<typeof BooleanNumSchema>
 
 // Boolean as string: "0" = false, "1" = true
 export const BooleanStrSchema = z.string().regex(/^[01]$/, 'Must be "0" (false) or "1" (true)')
@@ -41,28 +59,28 @@ export type AssetSchema = z.infer<typeof AssetSchema>
 // ARRAY SCHEMAS - Fixed-size arrays based on contract constants
 // ============================================================================
 
-// Fixed-size array of 64 poll IDs (uint64 strings)
+// Fixed-size array of 64 poll IDs (uint64)
 export const PollIdsArraySchema = z
-	.array(UInt64StrSchema)
-	.length(QUTIL_CONFIG.MAX_OPTIONS, `Must contain exactly ${QUTIL_CONFIG.MAX_OPTIONS} poll IDs`)
+	.array(UInt64Schema)
+	.max(
+		QUTIL_CONFIG.MAX_NUM_OF_POLLS,
+		`Must contain at most ${QUTIL_CONFIG.MAX_NUM_OF_POLLS} poll IDs`
+	)
 export type PollIdsArraySchema = z.infer<typeof PollIdsArraySchema>
 
-// Fixed-size array of 64 voting results (uint64 strings)
+// Fixed-size array of 64 voting results (uint64)
 export const VotingResultsArraySchema = z
-	.array(UInt64StrSchema)
-	.length(
+	.array(UInt64Schema)
+	.max(
 		QUTIL_CONFIG.MAX_OPTIONS,
-		`Must contain exactly ${QUTIL_CONFIG.MAX_OPTIONS} voting results`
+		`Must contain at most ${QUTIL_CONFIG.MAX_OPTIONS} voting results`
 	)
 export type VotingResultsArraySchema = z.infer<typeof VotingResultsArraySchema>
 
-// Fixed-size array of 64 voter counts (uint64 strings)
+// Fixed-size array of 64 voter counts (uint64)
 export const VoterCountsArraySchema = z
-	.array(UInt64StrSchema)
-	.length(
-		QUTIL_CONFIG.MAX_OPTIONS,
-		`Must contain exactly ${QUTIL_CONFIG.MAX_OPTIONS} voter counts`
-	)
+	.array(UInt64Schema)
+	.max(QUTIL_CONFIG.MAX_OPTIONS, `Must contain at most ${QUTIL_CONFIG.MAX_OPTIONS} voter counts`)
 export type VoterCountsArraySchema = z.infer<typeof VoterCountsArraySchema>
 
 // Fixed-size array of 256 bytes for GitHub URLs
@@ -79,30 +97,34 @@ export type GitHubUrlArraySchema = z.infer<typeof GitHubUrlArraySchema>
 // ============================================================================
 
 export const GetCurrentPollIdResponseSchema = z.object({
-	current_poll_id: UInt64StrSchema.describe('Total number of polls created (current and past)'),
+	current_poll_id: UInt64Schema.describe('Total number of polls created (current and past)'),
 	active_poll_ids: PollIdsArraySchema.describe('Array of active poll IDs'),
-	active_count: UInt64StrSchema.describe('Number of currently active polls')
+	active_count: UInt64Schema.describe('Number of currently active polls')
 })
 export type GetCurrentPollIdResponse = z.infer<typeof GetCurrentPollIdResponseSchema>
 
 export const GetPollsByCreatorResponseSchema = z.object({
 	poll_ids: PollIdsArraySchema.describe('Array of poll IDs created by the specified address'),
-	count: UInt64StrSchema.describe('Number of polls created by the specified address')
+	count: UInt64Schema.describe('Number of polls created by the specified address')
 })
 export type GetPollsByCreatorResponse = z.infer<typeof GetPollsByCreatorResponseSchema>
 
 export const GetCurrentResultResponseSchema = z.object({
 	result: VotingResultsArraySchema.describe('Total voting power for each option (0-63)'),
 	voter_count: VoterCountsArraySchema.describe('Number of voters for each option (0-63)'),
-	is_active: BooleanStrSchema.describe('Whether the poll is currently active (1) or inactive (0)')
+	is_active: UInt64Schema.describe(
+		'Whether the poll is currently active (non-zero = active, 0 = inactive)'
+	)
 })
 export type GetCurrentResultResponse = z.infer<typeof GetCurrentResultResponseSchema>
 
 export const QUtilPollSchema = z.object({
-	poll_name: QubicIdSchema.describe('Unique identifier for the poll'),
+	poll_name: z.string().min(1, 'Poll name is required').describe('Human-readable poll name'),
 	poll_type: z.union([z.literal(1), z.literal(2)]).describe('Poll type: 1 = Qubic, 2 = Asset'),
-	min_amount: UInt64StrSchema.describe('Minimum amount required to vote in this poll'),
-	is_active: BooleanStrSchema.describe('Whether the poll is currently active'),
+	min_amount: UInt64Schema.describe('Minimum amount required to vote in this poll'),
+	is_active: UInt64Schema.describe(
+		'Whether the poll is currently active (non-zero = active, 0 = inactive)'
+	),
 	creator: QubicIdSchema.describe('Address that created the poll'),
 	allowed_assets: z
 		.array(AssetSchema)
@@ -111,14 +133,17 @@ export const QUtilPollSchema = z.object({
 			`Maximum ${QUTIL_CONFIG.MAX_ASSETS_PER_POLL} assets allowed per poll`
 		)
 		.describe('List of allowed assets for asset-type polls'),
-	num_assets: UInt64StrSchema.describe('Number of assets in the allowed_assets array')
+	num_assets: UInt64Schema.describe('Number of assets in the allowed_assets array')
 })
 export type QUtilPollResponse = z.infer<typeof QUtilPollSchema>
 
 export const GetPollInfoResponseSchema = z.object({
-	found: BooleanStrSchema.describe('Whether the poll was found (1) or not (0)'),
+	found: UInt64Schema.describe('Whether the poll was found (1) or not (0)'),
 	poll_info: QUtilPollSchema.describe('Detailed information about the poll'),
-	poll_link: GitHubUrlArraySchema.describe('GitHub URL associated with the poll (256 bytes)')
+	poll_link: z
+		.string()
+		.max(256, 'GitHub URL must be 256 characters or less')
+		.describe('GitHub URL associated with the poll')
 })
 export type GetPollInfoResponse = z.infer<typeof GetPollInfoResponseSchema>
 

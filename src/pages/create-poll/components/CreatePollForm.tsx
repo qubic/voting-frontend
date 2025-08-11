@@ -28,9 +28,8 @@ import {
 } from '@/components/ui/select'
 import { useWalletConnect } from '@/hooks'
 import { LogFeature, makeLog } from '@/lib/logger'
-import { POLL_TYPE } from '@/lib/qubic'
+import { encodeParams, POLL_TYPE, QUTIL_ABI } from '@/lib/qubic'
 import { QUTIL_CONFIG, QUTIL_PROCEDURES } from '@/lib/qubic/constants'
-import { encodeCreatePollFormToBase64 } from '@/lib/qubic/encoders'
 import { type CreatePollFormData, CreatePollSchema } from '@/lib/qubic/schemas'
 import { useLazyGetTickInfoQuery } from '@/store/apis/qubic-rpc/qubic-rpc.api'
 
@@ -100,9 +99,9 @@ export default function CreatePollForm() {
 
 			log({ formData: data, futureTick })
 
-			const payload = encodeCreatePollFormToBase64(data)
+			const { encodedParams } = encodeParams(data, QUTIL_ABI.functions.createPoll.inputs)
 
-			log({ encodedPayload: payload })
+			log({ encodedPayload: encodedParams })
 
 			const sent = await walletClient.sendTransaction(
 				selectedAccount.address,
@@ -110,7 +109,7 @@ export default function CreatePollForm() {
 				QUTIL_CONFIG.POLL_CREATION_FEE,
 				futureTick,
 				QUTIL_PROCEDURES.CREATE_POLL,
-				payload
+				encodedParams
 			)
 
 			log({ sent })
@@ -210,6 +209,7 @@ export default function CreatePollForm() {
 											type="number"
 											placeholder="Enter minimum amount"
 											{...field}
+											onChange={(e) => field.onChange(Number(e.target.value))}
 										/>
 									</FormControl>
 									<FormDescription>
@@ -267,7 +267,7 @@ export default function CreatePollForm() {
 									<Card key={field.id} className="bg-muted/30">
 										<CardContent className="pt-4">
 											<div className="mb-4 flex items-start justify-between">
-												<h4 className="font-medium">Asset {index + 1}</h4>
+												<h4 className="font-medium">Asset #{index + 1}</h4>
 												<Button
 													type="button"
 													onClick={() => remove(index)}
@@ -278,7 +278,7 @@ export default function CreatePollForm() {
 													<Trash2 className="h-4 w-4" />
 												</Button>
 											</div>
-											<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+											<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 												<FormField
 													control={form.control}
 													name={`allowed_assets.${index}.issuer`}
