@@ -2,6 +2,9 @@
 
 import { FileText, Plus, Trash2, Zap } from 'lucide-react'
 import { useFieldArray, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
+import { toast } from 'sonner'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SelectGroup, Separator } from '@radix-ui/react-select'
@@ -26,12 +29,14 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select'
-import { useWalletConnect } from '@/hooks'
+import { TOASTS_DURATIONS } from '@/constants/toasts-durations'
+import { useQUtilContract, useWalletConnect } from '@/hooks'
+import { getToastErrorMessage } from '@/lib/errors'
 import { LogFeature, makeLog } from '@/lib/logger'
-import { encodeParams, POLL_TYPE, QUTIL_ABI } from '@/lib/qubic'
-import { QUTIL_CONFIG, QUTIL_PROCEDURES } from '@/lib/qubic/constants'
+import { POLL_TYPE } from '@/lib/qubic'
+import { QUTIL_CONFIG } from '@/lib/qubic/constants'
 import { type CreatePollFormData, CreatePollSchema } from '@/lib/qubic/schemas'
-import { useLazyGetTickInfoQuery } from '@/store/apis/qubic-rpc/qubic-rpc.api'
+import { PublicRoutes } from '@/router'
 
 const log = makeLog(LogFeature.CREATE_POLL_FORM)
 
@@ -47,10 +52,12 @@ const POLL_TYPES = [
 ]
 
 export default function CreatePollForm() {
-	const { isWalletConnected, selectedAccount, walletClient, handleConnectWallet } =
-		useWalletConnect()
+	const { t } = useTranslation()
+	const navigate = useNavigate()
 
-	const [getTickInfo] = useLazyGetTickInfoQuery()
+	const { isWalletConnected, handleConnectWallet } = useWalletConnect()
+
+	const { createPoll } = useQUtilContract()
 
 	const form = useForm<CreatePollFormData>({
 		resolver: zodResolver(CreatePollSchema),
@@ -78,52 +85,32 @@ export default function CreatePollForm() {
 	}
 
 	const onSubmit = async (data: CreatePollFormData) => {
-		if (!isWalletConnected || !selectedAccount) {
-			alert('Please connect your wallet first')
-			return
-		}
-
-		if (!walletClient) {
-			alert('Wallet client not initialized')
-			return
-		}
-
+		const pendingToast = toast.loading('Please approve the transaction in your wallet', {
+			duration: TOASTS_DURATIONS.PENDING,
+			action: { label: 'Dismiss', onClick: () => toast.dismiss(pendingToast) }
+		})
 		try {
-			const tickInfo = await getTickInfo()
+			const result = await createPoll(data)
 
-			if (!tickInfo.data) {
-				throw new Error('Failed to get tick info')
+			if (!result.success) {
+				throw new Error('Something went wrong while creating the poll')
 			}
 
-			const futureTick = tickInfo.data.tick + 10
+			log({ result })
 
-			log({ formData: data, futureTick })
-
-			const { encodedParams } = encodeParams(data, QUTIL_ABI.functions.createPoll.inputs)
-
-			log({ encodedPayload: encodedParams })
-
-			const sent = await walletClient.sendTransaction(
-				selectedAccount.address,
-				QUTIL_CONFIG.ADDRESS,
-				QUTIL_CONFIG.POLL_CREATION_FEE,
-				futureTick,
-				QUTIL_PROCEDURES.CREATE_POLL,
-				encodedParams
-			)
-
-			log({ sent })
-
-			alert(`Poll created at tick ${sent.tick}`)
+			toast.success(`Poll creation will be processed at tick ${result.tick}`)
 			form.reset()
+			navigate(PublicRoutes.HOME)
 		} catch (error) {
-			console.error(error)
-			alert('Failed to create poll')
+			console.error('Error creating poll', error)
+			toast.error(`Error creating poll: ${getToastErrorMessage(error, t)}`)
+		} finally {
+			toast.dismiss(pendingToast)
 		}
 	}
 
 	return (
-		<Card className="mx-auto md:w-1/2">
+		<Card className="mx-auto max-w-2xl">
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
 					<FileText className="h-5 w-5" />

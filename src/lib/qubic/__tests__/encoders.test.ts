@@ -27,7 +27,6 @@ const readI16LE = (buf: Buffer, offset: number) => buf.readInt16LE(offset)
 
 // deterministic 32 raw bytes (1..32)
 const RAW32 = Buffer.from(Array.from({ length: 32 }, (_, i) => (i + 1) & 0xff))
-const QUBIC_ID_MOCK = 'IPRVRRNTUTWURASNKZTIZDYSVYJAHFKIGRLRLIDEHHIUCTAAJLFASDQGAXWN'
 const ASSET_NAME_MOCK = 'GARTH'
 const RAW32_HEX = RAW32.toString('hex')
 const ASSET_STRUCT_MOCK = {
@@ -253,9 +252,9 @@ describe('encoders.ts', () => {
 				expect(arrSlice.subarray(3).equals(zeros(253))).toBe(true)
 			})
 
-			it('encodes uint64[4] with missing items zero-filled (LE)', () => {
+			it('encodes uint64[64] with missing items zero-filled (LE)', () => {
 				// Arrange
-				const fields: QUtilInputOutput[] = [{ name: 'u', type: 'uint64[4]' }]
+				const fields: QUtilInputOutput[] = [{ name: 'u', type: 'uint64[64]' }]
 				const params = { u: [1, 2] }
 
 				// Act
@@ -263,7 +262,7 @@ describe('encoders.ts', () => {
 				const buf = b64ToBuf(encodedParams)
 
 				// Assert
-				expect(inputSize).toBe(32)
+				expect(inputSize).toBe(512)
 				expect(readU64LE(buf, 0)).toBe(1n)
 				expect(readU64LE(buf, 8)).toBe(2n)
 				expect(readU64LE(buf, 16)).toBe(0n)

@@ -14,7 +14,7 @@ export default function App() {
 	return (
 		<I18nextProvider i18n={i18n}>
 			<ReduxProvider store={store}>
-				<Toaster position="bottom-right" />
+				<Toaster position="bottom-right" richColors closeButton />
 				<WalletConnectProvider>
 					<RouterProvider router={router} />
 					<ModalManager />

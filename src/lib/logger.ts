@@ -4,7 +4,8 @@ export const LogFeature = {
 	QUTIL_CONTRACT_HOOK: 'QUTIL_CONTRACT_HOOK',
 	ENCODERS: 'ENCODERS',
 	DECODERS: 'DECODERS',
-	CREATE_POLL_FORM: 'CREATE_POLL_FORM'
+	CREATE_POLL_FORM: 'CREATE_POLL_FORM',
+	TX_MONITOR: 'TX_MONITOR'
 } as const
 
 const enabledLogs: (typeof LogFeature)[keyof typeof LogFeature][] = [
@@ -12,8 +13,9 @@ const enabledLogs: (typeof LogFeature)[keyof typeof LogFeature][] = [
 	// LogFeature.WALLET_CONNECT_CONTEXT,
 	LogFeature.QUTIL_CONTRACT_HOOK,
 	// LogFeature.ENCODERS,
-	LogFeature.DECODERS,
-	LogFeature.CREATE_POLL_FORM
+	// LogFeature.DECODERS,
+	LogFeature.CREATE_POLL_FORM,
+	LogFeature.TX_MONITOR
 ]
 
 export const makeLog =

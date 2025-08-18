@@ -5,13 +5,18 @@ import type { RootState } from '@/store'
 
 export const ModalType = {
 	NONE: 'NONE',
-	CONNECT_WALLET: 'CONNECT_WALLET'
+	CONNECT_WALLET: 'CONNECT_WALLET',
+	CANCEL_POLL_CONFIRMATION: 'CANCEL_POLL_CONFIRMATION'
 } as const
 export type ModalType = (typeof ModalType)[keyof typeof ModalType]
 
 export type ModalProps = {
 	[ModalType.NONE]: undefined
 	[ModalType.CONNECT_WALLET]: undefined
+	[ModalType.CANCEL_POLL_CONFIRMATION]: {
+		pollId: string
+		pollName: string
+	}
 }
 
 export interface ModalState {

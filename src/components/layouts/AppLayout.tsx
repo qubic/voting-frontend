@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react'
 import { Outlet, useLocation } from 'react-router'
 
+import Footer from './Footer'
 import { Header } from './Header'
 
 export default function AppLayout() {
@@ -16,6 +17,7 @@ export default function AppLayout() {
 			<main className="container mx-auto flex-1 overflow-y-auto px-4 py-6 md:px-6 md:py-16">
 				<Outlet />
 			</main>
+			<Footer />
 		</div>
 	)
 }

@@ -1,190 +1,158 @@
 'use client'
 
 import { RefreshCw, TrendingUp } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { useQUtilContract } from '@/hooks'
-import type { GetCurrentResultResponse, GetPollInfoResponse } from '@/lib/qubic/schemas'
-import type { ContractResponse } from '@/lib/qubic/types'
-import type { PollWithResults } from '@/types'
+import { useWalletConnect } from '@/hooks'
 
-import PollCard from './PollCard'
+import { usePolls } from '../hooks'
+import type { PollsListType } from '../types'
+
+import { PollCard } from './PollCard'
+
+const POLLS_LIST_UI_CONFIGS: Record<
+	PollsListType,
+	{
+		title: string
+		badgeVariant: 'default' | 'secondary' | 'outline'
+		emptyTitle: string
+		emptyMessage: string
+	}
+> = {
+	active: {
+		title: 'Active Polls',
+		badgeVariant: 'default',
+		emptyTitle: 'No Active Polls',
+		emptyMessage: 'There are currently no active polls. Check back later!'
+	},
+	inactive: {
+		title: 'Previous Polls',
+		badgeVariant: 'secondary',
+		emptyTitle: 'Previous Polls Coming Soon',
+		emptyMessage:
+			'For now, you can only view polls from the current epoch. Historical poll data from previous epochs will be available soon.'
+	},
+	'my-polls': {
+		title: 'My Polls',
+		badgeVariant: 'outline',
+		emptyTitle: 'No Polls Created',
+		emptyMessage: "You haven't created any polls yet. Create your first poll to get started!"
+	}
+} as const
 
 interface PollsListProps {
-	type?: 'active' | 'inactive'
-}
-
-// Helper function to fetch poll info and results
-async function fetchPollWithResults(
-	pollId: number,
-	getPollInfo: (id: number) => Promise<ContractResponse<GetPollInfoResponse>>,
-	getCurrentResult: (id: number) => Promise<ContractResponse<GetCurrentResultResponse>>
-): Promise<PollWithResults | null> {
-	try {
-		const pollInfo = await getPollInfo(pollId)
-		if (!pollInfo.success || !pollInfo.data || pollInfo.data.found !== 1) {
-			return null
-		}
-
-		const poll: PollWithResults = {
-			...pollInfo.data.poll_info,
-			id: pollId,
-			poll_link: pollInfo.data.poll_link
-		}
-
-		// Fetch poll results
-		const pollResults = await getCurrentResult(pollId)
-		if (pollResults.success && pollResults.data) {
-			poll.results = pollResults.data
-		}
-
-		return poll
-	} catch (error) {
-		console.error(`Failed to fetch poll ${pollId}:`, error)
-		return null
-	}
-}
-
-// Helper function to fetch active polls
-async function fetchActivePolls(
-	activePollIds: number[],
-	activeCount: number,
-	getPollInfo: (id: number) => Promise<ContractResponse<GetPollInfoResponse>>,
-	getCurrentResult: (id: number) => Promise<ContractResponse<GetCurrentResultResponse>>
-): Promise<PollWithResults[]> {
-	const activePolls: PollWithResults[] = []
-
-	for (let i = 0; i < activeCount; i++) {
-		const pollId = activePollIds[i]
-		const poll = await fetchPollWithResults(pollId, getPollInfo, getCurrentResult)
-		if (poll) {
-			activePolls.push(poll)
-		}
-	}
-
-	return activePolls
-}
-
-// Helper function to fetch recent inactive polls
-async function fetchInactivePolls(
-	currentPollId: number,
-	activePollIds: number[],
-	maxToShow: number,
-	getPollInfo: (id: number) => Promise<ContractResponse<GetPollInfoResponse>>,
-	getCurrentResult: (id: number) => Promise<ContractResponse<GetCurrentResultResponse>>
-): Promise<PollWithResults[]> {
-	const inactivePolls: PollWithResults[] = []
-	const totalPolls = currentPollId
-
-	for (let i = Math.max(0, totalPolls - maxToShow - 1); i < totalPolls; i++) {
-		// Skip if this poll is already in active polls
-		if (activePollIds.includes(i)) continue
-
-		const poll = await fetchPollWithResults(i, getPollInfo, getCurrentResult)
-		if (poll) {
-			inactivePolls.push(poll)
-		}
-	}
-
-	return inactivePolls
+	type?: PollsListType
 }
 
 export default function PollsList({ type = 'active' }: PollsListProps) {
-	const [polls, setPolls] = useState<PollWithResults[]>([])
-	const [loading, setLoading] = useState(false)
-
-	const { getCurrentPollId, getPollInfo, getCurrentResult } = useQUtilContract()
-
-	const loadPolls = useCallback(async () => {
-		setLoading(true)
-		try {
-			const currentPollData = await getCurrentPollId()
-
-			if (currentPollData.success && currentPollData.data) {
-				const { current_poll_id, active_poll_ids, active_count } = currentPollData.data
-
-				// Fetch active and inactive polls using helper functions
-				const [activePolls, inactivePolls] = await Promise.all([
-					fetchActivePolls(active_poll_ids, active_count, getPollInfo, getCurrentResult),
-					fetchInactivePolls(
-						current_poll_id,
-						active_poll_ids,
-						5,
-						getPollInfo,
-						getCurrentResult
-					)
-				])
-
-				setPolls([...activePolls, ...inactivePolls])
-			}
-		} catch (error) {
-			console.error('Failed to load polls:', error)
-		} finally {
-			setLoading(false)
-		}
-	}, [getCurrentPollId, getPollInfo, getCurrentResult])
-
-	useEffect(() => {
-		loadPolls()
-	}, [loadPolls])
+	const { polls, loading, error, refresh } = usePolls(type)
+	const { isWalletConnected, handleConnectWallet } = useWalletConnect()
 
 	// Filter and prepare data for display
 	const activePolls = polls.filter((poll) => poll.is_active === 1)
 	const inactivePolls = polls.filter((poll) => poll.is_active === 0)
-	const pollsToShow = type === 'active' ? activePolls : inactivePolls
 
-	// UI configuration based on active/inactive state
-	const uiConfig = {
-		title: type === 'active' ? 'Active Polls' : 'Previous Polls',
-		badgeVariant: type === 'active' ? ('default' as const) : ('secondary' as const),
-		emptyTitle: type === 'active' ? 'No Active Polls' : 'No Previous Polls',
-		emptyMessage:
-			type === 'active'
-				? 'There are currently no active polls. Check back later!'
-				: 'No previous polls found.'
-	}
+	const pollsToShow =
+		type === 'active' ? activePolls : type === 'inactive' ? inactivePolls : polls // my-polls: show all polls by the user
+
+	const uiConfig = POLLS_LIST_UI_CONFIGS[type]
 
 	// Render loading state
 	if (loading) {
 		return (
 			<div className="py-8 text-center">
-				<RefreshCw className="mx-auto mb-2 h-8 w-8 animate-spin" />
+				<RefreshCw className="mx-auto mb-2 size-8 animate-spin" />
 				<p>Loading polls...</p>
 			</div>
 		)
 	}
 
-	// Render polls list
-	if (pollsToShow.length > 0) {
+	// Render error state
+	if (error) {
 		return (
-			<div className="space-y-4">
-				<div className="flex items-center gap-2">
-					<h2 className="text-xl font-semibold">{uiConfig.title}</h2>
-					<Badge variant={uiConfig.badgeVariant}>{pollsToShow.length}</Badge>
-				</div>
-				<div className="grid gap-4">
-					{pollsToShow.map((poll) => (
-						<PollCard
-							key={poll.id}
-							poll={poll}
-							onVoteSuccess={type === 'active' ? loadPolls : undefined}
-						/>
-					))}
-				</div>
-			</div>
+			<Card>
+				<CardContent className="py-8 text-center">
+					<TrendingUp className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+					<h3 className="mb-2 text-lg font-semibold">Error Loading Polls</h3>
+					<p className="text-muted-foreground mb-4">{error}</p>
+					<Button onClick={refresh} className="mx-auto">
+						Try Again
+					</Button>
+				</CardContent>
+			</Card>
+		)
+	}
+
+	// Render wallet connection required message for my-polls
+	if (type === 'my-polls' && !isWalletConnected) {
+		return (
+			<Card>
+				<CardContent className="py-8 text-center">
+					<TrendingUp className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+					<h3 className="mb-2 text-lg font-semibold">
+						Connect Wallet to View Your Polls
+					</h3>
+					<p className="text-muted-foreground mb-4">
+						You need to connect your wallet to see the polls you've created.
+					</p>
+					<Button onClick={handleConnectWallet} className="mx-auto">
+						Connect Wallet
+					</Button>
+				</CardContent>
+			</Card>
 		)
 	}
 
 	// Render empty state
+	if (pollsToShow.length === 0) {
+		// Special handling for inactive polls since they're not available yet
+		if (type === 'inactive') {
+			return (
+				<Card>
+					<CardContent className="py-8 text-center">
+						<TrendingUp className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+						<h3 className="mb-2 text-lg font-semibold">Previous Polls Coming Soon</h3>
+						<p className="text-muted-foreground">
+							For now, you can only view polls from the current epoch. Historical poll
+							data from previous epochs will be available soon.
+						</p>
+					</CardContent>
+				</Card>
+			)
+		}
+
+		return (
+			<Card>
+				<CardContent className="py-8 text-center">
+					<TrendingUp className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+					<h3 className="mb-2 text-lg font-semibold">{uiConfig.emptyTitle}</h3>
+					<p className="text-muted-foreground">{uiConfig.emptyMessage}</p>
+				</CardContent>
+			</Card>
+		)
+	}
+
+	// Render polls list
 	return (
-		<Card>
-			<CardContent className="py-8 text-center">
-				<TrendingUp className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-				<h3 className="mb-2 text-lg font-semibold">{uiConfig.emptyTitle}</h3>
-				<p className="text-muted-foreground">{uiConfig.emptyMessage}</p>
-			</CardContent>
-		</Card>
+		<div className="space-y-4">
+			<div className="flex items-center justify-between">
+				<div className="flex items-center gap-2">
+					<h2 className="text-xl font-semibold">{uiConfig.title}</h2>
+					<Badge variant={uiConfig.badgeVariant}>{pollsToShow.length}</Badge>
+				</div>
+				<Button onClick={refresh} disabled={loading} variant="outline" size="sm">
+					<RefreshCw className={`mr-2 size-4 ${loading ? 'animate-spin' : ''}`} />
+					Refresh
+				</Button>
+			</div>
+
+			<div className="grid gap-4">
+				{pollsToShow.map((poll) => (
+					<PollCard key={poll.id} poll={poll} showCancelButton={type === 'my-polls'} />
+				))}
+			</div>
+		</div>
 	)
 }

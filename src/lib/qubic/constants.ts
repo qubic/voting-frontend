@@ -19,6 +19,7 @@ export const QUTIL_CONFIG = {
 	MAX_VOTERS: 64 * 131_072,
 	VOTE_FEE: 100,
 	POLL_CREATION_FEE: 10_000_000,
+	POLL_CANCELLATION_FEE: 10_000_000,
 	POLL_GITHUB_URL_MAX_SIZE: 256, // Max string length for poll's GitHub URLs
 	POLL_CREATION_EXPECTED_SIZE: 952
 } as const
@@ -40,7 +41,8 @@ export const QUTIL_PROCEDURES = {
 	BURN_QUBIC: 2,
 	SEND_TO_MANY_BENCHMARK: 3,
 	CREATE_POLL: 4,
-	VOTE: 5
+	VOTE: 5,
+	CANCEL_POLL: 6
 } as const
 
 export type QUtilProcedureKey = keyof typeof QUTIL_PROCEDURES

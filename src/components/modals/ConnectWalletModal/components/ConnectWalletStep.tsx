@@ -50,7 +50,7 @@ function ConnectWalletContent({
 				<div className="flex flex-col items-center gap-3">
 					<h2 className="text-2xl font-bold">{t('global.declined')}</h2>
 					<div className="size-fit rounded-full bg-red-500">
-						<XIcon className="text-primary-70 size-4" />
+						<XIcon className="text-muted-foreground size-10" />
 					</div>
 				</div>
 				<p>{t('connect_wallet_modal.user_rejected_connection')}</p>

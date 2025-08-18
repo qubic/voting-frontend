@@ -1,8 +1,3 @@
-// decoders.ts
-
-/* -----------------------------------
-   Imports
------------------------------------ */
 import base64 from 'base-64'
 import { Buffer } from 'buffer'
 

@@ -43,3 +43,18 @@ export function getRPCErrorMessage(error: unknown, t: (key: string) => string): 
 	}
 	return t('errors.unexpected_error')
 }
+
+/**
+ * Extracts a user-friendly toast error message based on JSON-RPC error codes.
+ *
+ * @param {unknown} error - The error object to extract the message from.
+ * @param {(key: string) => string} t - Translation function.
+ * @returns {string} - The localized error message.
+ */
+export const getToastErrorMessage = (error: unknown, t: (key: string) => string): string => {
+	const errorMessage = typeof error === 'string' ? error : String(error)
+	if (errorMessage.toLowerCase().includes('request expired')) {
+		return t('global.request_expired')
+	}
+	return getRPCErrorMessage(error, t)
+}

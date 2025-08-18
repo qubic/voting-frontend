@@ -1,4 +1,9 @@
-import type { GetCurrentResultResponse, QUtilPollResponse } from '@/lib/qubic/schemas'
+import type {
+	CreatePollFormData,
+	GetCurrentResultResponse,
+	QUtilPollResponse,
+	VoteFormData
+} from '@/lib/qubic/schemas'
 
 export type Language = {
 	id: string
@@ -18,3 +23,30 @@ export type PollWithResults = QUtilPollResponse & {
 	results?: GetCurrentResultResponse
 	poll_link: string
 }
+
+export type TransactionStatus = 'pending' | 'success' | 'failed'
+
+// Types for transaction monitoring
+type BasePendingTransaction = {
+	targetTick: number
+	txHash: string
+	userAddress: string
+	status: TransactionStatus
+	errorMessage?: string
+}
+
+export type PendingTransaction =
+	| (BasePendingTransaction & {
+			type: 'createPoll'
+			data: CreatePollFormData
+	  })
+	| (BasePendingTransaction & {
+			type: 'vote'
+			data: VoteFormData
+	  })
+	| (BasePendingTransaction & {
+			type: 'cancelPoll'
+			data: {
+				poll_id: number
+			}
+	  })

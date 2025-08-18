@@ -59,5 +59,6 @@ export const {
 	useBroadcastTransactionMutation,
 	useQuerySmartContractMutation,
 	// V2 Endpoints
-	useGetTransactionQuery
+	useGetTransactionQuery,
+	useLazyGetTransactionQuery
 } = qubicRpcApi
