@@ -1,25 +1,33 @@
 'use client'
 
 import { History } from 'lucide-react'
+import { useMemo } from 'react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useTxMonitor } from '@/hooks'
+import { useAppSelector } from '@/hooks'
+import { selectTransactions } from '@/store/slices/transactions.slice'
 
 import { TransactionItem } from './TransactionItem'
 
 export default function TransactionHistory() {
-	const { pendingTransactions, transactionHistory } = useTxMonitor()
+	const { pendingTransactions, transactionHistory } = useAppSelector(selectTransactions)
 
 	// Get all transactions (both pending and completed from history)
-	const allTransactions = [
-		...pendingTransactions,
-		...transactionHistory.filter(
-			(tx) => !pendingTransactions.some((ptx) => ptx.txHash === tx.txHash)
-		)
-	]
+	const allTransactions = useMemo(
+		() => [
+			...pendingTransactions,
+			...transactionHistory.filter(
+				(tx) => !pendingTransactions.some((ptx) => ptx.txHash === tx.txHash)
+			)
+		],
+		[pendingTransactions, transactionHistory]
+	)
 
 	// Sort transactions by tick in descending order (higher ticks first)
-	const sortedTransactions = allTransactions.sort((a, b) => b.targetTick - a.targetTick)
+	const sortedTransactions = useMemo(
+		() => allTransactions.sort((a, b) => b.targetTick - a.targetTick),
+		[allTransactions]
+	)
 
 	if (sortedTransactions.length === 0) {
 		return (

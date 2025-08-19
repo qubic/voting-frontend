@@ -1,11 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { qubicRpcApi } from './apis/qubic-rpc'
-import modalReducer from './slices/modal.slice'
+import { modalSlice } from './slices/modal.slice'
+import { transactionsSlice } from './slices/transactions.slice'
 
 export const store = configureStore({
 	reducer: {
-		modal: modalReducer,
+		// Slices reducers
+		[modalSlice.name]: modalSlice.reducer,
+		[transactionsSlice.name]: transactionsSlice.reducer,
+		// API reducers
 		[qubicRpcApi.reducerPath]: qubicRpcApi.reducer
 	},
 

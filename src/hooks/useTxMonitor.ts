@@ -1,16 +1,25 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { POLLING_INTERVALS } from '@/constants/polling-intervals'
 import { LogFeature, makeLog } from '@/lib/logger'
 import { useGetTickInfoQuery, useLazyGetTransactionQuery } from '@/store/apis/qubic-rpc'
-import type { PendingTransaction } from '@/types'
+import {
+	addPendingTransaction as addPendingTx,
+	initializeFromStorage,
+	removeTransaction as removeTx,
+	updateTransactionStatus as updateTxStatus
+} from '@/store/slices/transactions.slice'
+import type { PendingTransaction, TransactionStatus } from '@/types'
 
 const log = makeLog(LogFeature.TX_MONITOR)
 
 import { toast } from 'sonner'
 
-import { LOCAL_STORAGE_KEYS } from '@/constants/local-storage-keys'
 import { TOASTS_DURATIONS } from '@/constants/toasts-durations'
+import { selectTransactions } from '@/store/slices/transactions.slice'
+
+import { useAppSelector } from './redux'
 
 export interface TransactionResult {
 	success: boolean
@@ -34,37 +43,6 @@ export const TX_MSG = {
 		pending: 'Poll cancellation pending'
 	}
 } as const
-
-/* --------------------------
-   Storage helpers
---------------------------- */
-export function loadTransactionsHistoryFromStorage(): PendingTransaction[] {
-	const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.TRANSACTION_HISTORY)
-	if (!stored) return []
-	try {
-		const parsed: PendingTransaction[] = JSON.parse(stored)
-		return parsed
-	} catch {
-		localStorage.removeItem(LOCAL_STORAGE_KEYS.TRANSACTION_HISTORY)
-		return []
-	}
-}
-
-export function saveTransactionHistory(transaction: PendingTransaction) {
-	const existing = localStorage.getItem(LOCAL_STORAGE_KEYS.TRANSACTION_HISTORY)
-	const history: PendingTransaction[] = existing ? JSON.parse(existing) : []
-	const idx = history.findIndex((tx) => tx.txHash === transaction.txHash)
-	const updated =
-		idx >= 0
-			? history.map((tx, i) => (i === idx ? transaction : tx))
-			: [...history, transaction]
-	localStorage.setItem(LOCAL_STORAGE_KEYS.TRANSACTION_HISTORY, JSON.stringify(updated))
-}
-
-export function getTransactionHistory(): PendingTransaction[] {
-	const existing = localStorage.getItem(LOCAL_STORAGE_KEYS.TRANSACTION_HISTORY)
-	return existing ? JSON.parse(existing) : []
-}
 
 /* --------------------------
    Toast helpers
@@ -103,12 +81,8 @@ type AddPendingTransactionInput =
 	| Omit<Extract<PendingTransaction, { type: 'cancelPoll' }>, 'status'>
 
 export const useTxMonitor = () => {
-	// Storage strategy: All transactions (pending, success, failed) are stored in a single
-	// localStorage key (TRANSACTION_HISTORY). We maintain two separate React states:
-	// - pendingTransactions: for active monitoring and UI display
-	// - transactionHistory: for completed transactions display
-	const [pendingTransactions, setPendingTransactions] = useState<PendingTransaction[]>([])
-	const [transactionHistory, setTransactionHistory] = useState<PendingTransaction[]>([])
+	const dispatch = useDispatch()
+	const { pendingTransactions, transactionHistory } = useAppSelector(selectTransactions)
 
 	const isInitializedRef = useRef(false)
 	const lastTickProcessedRef = useRef(new Map<string, number>())
@@ -149,80 +123,77 @@ export const useTxMonitor = () => {
 		[tickInfo?.tick, getTransactionQuery]
 	)
 
-	const markTxDoneSoon = useCallback((txHash: string) => {
-		setTimeout(() => {
-			setPendingTransactions((prev) => prev.filter((tx) => tx.txHash !== txHash))
-			lastTickProcessedRef.current.delete(txHash)
-		}, 1000)
-	}, [])
-
 	/* --------------------------
      Public
   	--------------------------- */
 
-	const addPendingTransaction = useCallback((tx: AddPendingTransactionInput) => {
-		const newTx: PendingTransaction = { ...tx, status: 'pending' }
-		setPendingTransactions((prev) => [...prev, newTx])
-		saveTransactionHistory(newTx)
-		showPendingToast(newTx)
-		return newTx.txHash
-	}, [])
+	const addPendingTransaction = useCallback(
+		(tx: AddPendingTransactionInput) => {
+			const newTx: PendingTransaction = { ...tx, status: 'pending' }
+			dispatch(addPendingTx(newTx))
+			showPendingToast(newTx)
+			return newTx.txHash
+		},
+		[dispatch]
+	)
 
 	const updateTransactionStatus = useCallback(
 		(txHash: string, status: PendingTransaction['status'], errorMessage?: string) => {
-			setPendingTransactions((prev) => {
-				const next = prev.map((tx) =>
-					tx.txHash === txHash
-						? {
-								...tx,
-								status,
-								errorMessage: status === 'success' ? undefined : errorMessage
-							}
-						: tx
-				)
-				const updated = next.find((tx) => tx.txHash === txHash)
-				if (updated) {
-					saveTransactionHistory(updated)
-					// Update local history state
-					setTransactionHistory((prevHistory) => {
-						const existingIndex = prevHistory.findIndex((tx) => tx.txHash === txHash)
-						return existingIndex >= 0
-							? [
-									...prevHistory.slice(0, existingIndex),
-									updated,
-									...prevHistory.slice(existingIndex + 1)
-								]
-							: [...prevHistory, updated]
-					})
-				}
-				return next
-			})
-			if (status === 'success' || status === 'failed') markTxDoneSoon(txHash)
+			dispatch(updateTxStatus({ txHash, status, errorMessage }))
 		},
-		[markTxDoneSoon]
+		[dispatch]
 	)
 
-	const removeTransaction = useCallback((txHash: string) => {
-		setPendingTransactions((prev) => prev.filter((tx) => tx.txHash !== txHash))
-		lastTickProcessedRef.current.delete(txHash)
-	}, [])
+	const removeTransaction = useCallback(
+		(txHash: string) => {
+			dispatch(removeTx(txHash))
+			lastTickProcessedRef.current.delete(txHash)
+		},
+		[dispatch]
+	)
+
+	const refreshTransaction = useCallback(
+		async (txHash: string) => {
+			log('🔍 Starting refresh for tx:', txHash)
+
+			const tx = [...pendingTransactions, ...transactionHistory].find(
+				(t) => t.txHash === txHash
+			)
+
+			if (!tx) {
+				log('❌ Transaction with hash', txHash, 'not found')
+				return
+			}
+
+			try {
+				const result = await checkTransactionResult(tx)
+
+				if (result.success || result.message !== TX_MSG[tx.type].pending) {
+					showResultToast(tx, result)
+
+					const newStatus: TransactionStatus = result.success ? 'success' : 'failed'
+
+					dispatch(
+						updateTxStatus({
+							txHash,
+							status: newStatus,
+							errorMessage: result.success ? undefined : result.message
+						})
+					)
+				}
+			} catch (error) {
+				console.error('❌ Refresh failed:', error)
+			}
+		},
+		[pendingTransactions, transactionHistory, checkTransactionResult, dispatch]
+	)
 
 	useEffect(() => {
 		if (isInitializedRef.current) return
 		isInitializedRef.current = true
-		const allTransactions = loadTransactionsHistoryFromStorage()
-		const pending = allTransactions.filter((tx) => tx.status === 'pending')
-		const completed = allTransactions.filter((tx) => tx.status !== 'pending')
-		setPendingTransactions(pending)
-		setTransactionHistory(completed)
-	}, [])
 
-	useEffect(() => {
-		if (!isInitializedRef.current) return
-		// Save all transactions (both pending and completed) to the single TRANSACTION_HISTORY storage
-		const allTransactions = [...pendingTransactions, ...transactionHistory]
-		allTransactions.forEach((tx) => saveTransactionHistory(tx))
-	}, [pendingTransactions, transactionHistory])
+		dispatch(initializeFromStorage())
+	}, [dispatch])
 
 	// monitor (per-tick guarded)
 	useEffect(() => {
@@ -231,6 +202,7 @@ export const useTxMonitor = () => {
 		const monitorTransactions = async () => {
 			const currentTick = tickInfo.tick
 			const currentPending = pendingTransactions.filter((tx) => tx.status === 'pending')
+
 			if (currentPending.length === 0) {
 				log('No pending transactions to monitor for tick:', currentTick)
 				return
@@ -264,7 +236,7 @@ export const useTxMonitor = () => {
 		addPendingTransaction,
 		removeTransaction,
 		updateTransactionStatus,
-		getTransactionHistory,
+		refreshTransaction,
 		isInitialized: isInitializedRef.current
 	}
 }

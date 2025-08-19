@@ -1,10 +1,12 @@
 'use client'
 
-import { CheckCircle, ChevronDown, Clock, XCircle } from 'lucide-react'
+import { CheckCircle, ChevronDown, Clock, RefreshCw, XCircle } from 'lucide-react'
 import { useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { useTxMonitor } from '@/hooks/useTxMonitor'
 import type { PendingTransaction, TransactionStatus } from '@/types'
 
 import { TransactionDetails } from './TransactionDetails'
@@ -65,15 +67,36 @@ const StatusBadge = ({ status }: { status: TransactionStatus }) => {
 	}
 }
 
+const isRpcError = (errorMessage: string | undefined) => {
+	if (!errorMessage) return false
+
+	return (
+		errorMessage.includes('Transaction not found') ||
+		errorMessage.includes('Transaction check failed') ||
+		errorMessage.includes('not found on network')
+	)
+}
+
 interface TransactionItemProps {
 	transaction: PendingTransaction
 }
 
 export const TransactionItem = ({ transaction }: TransactionItemProps) => {
 	const [isExpanded, setIsExpanded] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
+	const { refreshTransaction } = useTxMonitor()
 
 	const handleToggle = () => {
 		setIsExpanded(!isExpanded)
+	}
+
+	const handleRefresh = async () => {
+		setIsRefreshing(true)
+		try {
+			await refreshTransaction(transaction.txHash)
+		} finally {
+			setIsRefreshing(false)
+		}
 	}
 
 	return (
@@ -114,6 +137,27 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
 				{/* Expanded Details */}
 				{isExpanded && (
 					<div className="space-y-4 border-t border-gray-700/50 bg-gray-800/20 p-4">
+						{/* Expanded Header with Refresh Button */}
+						<div className="flex items-center justify-between">
+							<h4 className="text-muted-foreground text-sm font-medium">
+								Transaction Details
+							</h4>
+							{transaction.status === 'failed' && (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handleRefresh}
+									disabled={isRefreshing}
+									className="h-8"
+								>
+									<RefreshCw
+										className={`mr-2 h-3 w-3 ${isRefreshing ? 'animate-spin' : ''}`}
+									/>
+									Refresh Status
+								</Button>
+							)}
+						</div>
+
 						<TransactionDetails transaction={transaction} />
 						<TransactionMetadata transaction={transaction} />
 
@@ -121,6 +165,27 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
 						{transaction.errorMessage && (
 							<TransactionError errorMessage={transaction.errorMessage} />
 						)}
+
+						{/* RPC Failure Explanation */}
+						{transaction.status === 'failed' &&
+							isRpcError(transaction.errorMessage) && (
+								<div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3">
+									<div className="flex items-start gap-2">
+										<Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500" />
+										<div className="text-sm">
+											<p className="mb-1 font-medium text-amber-500">
+												Transaction may have succeeded
+											</p>
+											<p className="text-amber-600 dark:text-amber-400">
+												Sometimes RPC calls fail to find transactions even
+												when they succeed on the network. Use the refresh
+												button above to check the current status, or check
+												on the explorer.
+											</p>
+										</div>
+									</div>
+								</div>
+							)}
 					</div>
 				)}
 			</CardContent>

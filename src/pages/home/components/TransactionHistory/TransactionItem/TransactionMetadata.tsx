@@ -1,3 +1,4 @@
+import ExplorerLink from '@/components/links/ExplorerLink'
 import type { PendingTransaction } from '@/types'
 
 interface TransactionMetadataProps {
@@ -15,9 +16,13 @@ export const TransactionMetadata = ({ transaction, compact = false }: Transactio
 				</div>
 				<div className="flex items-center gap-1">
 					<span className="text-muted-foreground">Tx ID:</span>
-					<span className="font-mono">
-						{transaction.txHash.slice(0, 6)}...{transaction.txHash.slice(-6)}
-					</span>
+					<ExplorerLink
+						value={transaction.txHash}
+						type="transaction"
+						ellipsis
+						className="font-mono"
+						showTooltip
+					/>
 				</div>
 			</div>
 		)
@@ -31,10 +36,13 @@ export const TransactionMetadata = ({ transaction, compact = false }: Transactio
 			</div>
 			<div className="flex items-center gap-1">
 				<span className="font-medium">Tx ID:</span>
-				<span className="font-mono font-medium">
-					{transaction.txHash.slice(0, 8)}...
-					{transaction.txHash.slice(-8)}
-				</span>
+				<ExplorerLink
+					value={transaction.txHash}
+					type="transaction"
+					ellipsis
+					className="font-mono font-medium"
+					showTooltip
+				/>
 			</div>
 		</div>
 	)
