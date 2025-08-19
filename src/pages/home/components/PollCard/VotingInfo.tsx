@@ -69,7 +69,7 @@ export default function VotingInfo({ className }: VotingInfoProps) {
 									<strong>Poll Requirements:</strong> Minimum 1,000 QUs per vote
 								</p>
 								<ul className="space-y-1">
-									<li>• Voter A: 20k QUs balance, votes with 10k QUs</li>
+									<li>• Voter A: 20k QUs balance, votes with 20k QUs</li>
 									<li>• Voter B: 1k QUs balance, votes with 1k QUs</li>
 									<li>• Voter C: 5k QUs balance, votes with 3k QUs</li>
 								</ul>
