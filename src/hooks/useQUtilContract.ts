@@ -225,7 +225,16 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 
 			log({ formData: data, futureTick })
 
-			const { encodedParams } = encodeParams(data, QUTIL_ABI.functions.createPoll.inputs)
+			const { encodedParams } = encodeParams(
+				{
+					...data,
+					...(data.allowed_assets &&
+						data.allowed_assets.length > 0 && {
+							num_assets: data.allowed_assets?.length
+						})
+				},
+				QUTIL_ABI.functions.createPoll.inputs
+			)
 
 			log({ encodedPayload: encodedParams })
 
