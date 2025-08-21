@@ -217,7 +217,7 @@ export default function CreatePollForm() {
 									<FormControl>
 										<Input
 											type="text"
-											placeholder="https://github.com/qubic/your-proposal"
+											placeholder="https://github.com/your-proposal"
 											{...field}
 										/>
 									</FormControl>

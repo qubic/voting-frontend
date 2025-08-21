@@ -170,10 +170,7 @@ export const CreatePollSchema = z
 			.describe('Minimum amount required to vote'),
 		github_link: z
 			.url('Please enter a valid URL')
-			.startsWith(
-				'https://github.com/qubic',
-				'GitHub link must start with https://github.com/qubic'
-			)
+			.startsWith('https://github.com/', 'GitHub link must start with https://github.com/')
 			.describe('GitHub repository link for the poll'),
 		allowed_assets: z
 			.array(AssetSchema)
