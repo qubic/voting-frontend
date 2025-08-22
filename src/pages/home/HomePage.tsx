@@ -19,6 +19,89 @@ export default function HomePage() {
 						Create polls, cast votes, and participate in community governance on the
 						Qubic network.
 					</p>
+					<section className="bg-muted/50 mt-8 space-y-3 rounded-lg p-4">
+						<h3 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
+							How It Works
+						</h3>
+						<div className="space-y-3 text-sm">
+							<div className="flex items-start space-x-3">
+								<div className="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
+								<div>
+									<p className="text-muted-foreground">
+										Voting does not move funds or assets
+									</p>
+								</div>
+							</div>
+							<div className="flex items-start space-x-3">
+								<div className="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
+								<div>
+									<p className="text-muted-foreground">
+										Each vote only burns 100 QU
+									</p>
+								</div>
+							</div>
+							<div className="flex items-start space-x-3">
+								<div className="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
+								<div>
+									<p className="text-muted-foreground">
+										Poll creation burns 10,000,000 QU
+									</p>
+								</div>
+							</div>
+							<div className="flex items-start space-x-3">
+								<div className="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
+								<div>
+									<p className="text-muted-foreground">
+										Voting weight = current balance in wallet (or largest
+										balance of allowed asset)
+									</p>
+								</div>
+							</div>
+							<div className="space-y-2">
+								<p className="font-medium">Polls can be of two types:</p>
+								<div className="ml-4 flex items-start space-x-3">
+									<div className="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
+									<div>
+										<p className="text-muted-foreground">
+											QUBIC Polls → your weight is your QUBIC balance
+										</p>
+									</div>
+								</div>
+								<div className="ml-4 flex items-start space-x-3">
+									<div className="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
+									<div>
+										<p className="text-muted-foreground">
+											Asset Polls → your weight is your largest balance among
+											the allowed assets (shares/tokens)
+										</p>
+									</div>
+								</div>
+							</div>
+							<div className="space-y-2">
+								<p className="font-medium">Balance Requirements During Poll</p>
+								<div className="ml-4 flex items-start space-x-3">
+									<div className="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
+									<div>
+										<p className="text-muted-foreground">
+											You must maintain your balance above the minimum amount
+											throughout the poll's active period. If your balance
+											drops below the minimum amount, your voting power will
+											be automatically removed.
+										</p>
+									</div>
+								</div>
+								<div className="ml-4 flex items-start space-x-3">
+									<div className="bg-primary mt-2 h-2 w-2 flex-shrink-0 rounded-full"></div>
+									<div>
+										<p className="text-muted-foreground">
+											If your balance increases, your voting power remains
+											unchanged.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
 				</div>
 			</div>
 
