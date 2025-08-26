@@ -59,7 +59,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 	----------------------------------- */
 
 	const getSendTick = useCallback(async () => {
-		const TICK_MARGIN = 10
+		const TICK_MARGIN = 15
 		const tickInfo = await getTickInfo()
 		if (!tickInfo.data) {
 			throw new Error('Failed to get tick info')
