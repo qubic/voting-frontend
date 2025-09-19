@@ -6,6 +6,7 @@ import { decodeContractResponse, encodeParams, QUTIL_ABI } from '@/lib/qubic'
 import { QUTIL_CONFIG, QUTIL_FUNCTIONS, QUTIL_PROCEDURES } from '@/lib/qubic/constants'
 import {
 	type CreatePollFormData,
+	type DistributeQuToShareholdersFormData,
 	type GetCurrentPollIdResponse,
 	GetCurrentPollIdResponseSchema,
 	type GetCurrentResultResponse,
@@ -46,6 +47,9 @@ export interface UseQUtilContractReturn {
 	cancelPoll: (
 		pollId: number
 	) => Promise<{ success: boolean; tick?: number; transactionId?: string }>
+	distributeQuToShareholders: (
+		data: DistributeQuToShareholdersFormData
+	) => Promise<{ success: boolean; tick?: number; transactionId?: string }>
 }
 
 export const useQUtilContract = (): UseQUtilContractReturn => {
@@ -59,7 +63,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 	----------------------------------- */
 
 	const getSendTick = useCallback(async () => {
-		const TICK_MARGIN = 15
+		const TICK_MARGIN = 35
 		const tickInfo = await getTickInfo()
 		if (!tickInfo.data) {
 			throw new Error('Failed to get tick info')
@@ -347,6 +351,49 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 		[walletClient, selectedAccount, getSendTick, addPendingTransaction]
 	)
 
+	const distributeQuToShareholders = useCallback(
+		async (data: DistributeQuToShareholdersFormData) => {
+			if (!walletClient || !selectedAccount) {
+				throw new Error('Wallet not connected')
+			}
+
+			const futureTick = await getSendTick()
+
+			log('distributeQuToShareholders - data', { data, futureTick })
+
+			const { encodedParams } = encodeParams(data, QUTIL_ABI.functions.distributeQuToShareholders.inputs)
+
+			log('distributeQuToShareholders - encodedParams', { encodedParams })
+
+			const sent = await walletClient.sendTransaction(
+				selectedAccount.address,
+				QUTIL_CONFIG.ADDRESS,
+				0, // No fee required for this procedure
+				futureTick,
+				QUTIL_PROCEDURES.DISTRIBUTE_QU_TO_SHAREHOLDERS,
+				encodedParams
+			)
+
+			log('distributeQuToShareholders - result', { sent })
+
+			// Add pending transaction to monitor
+			addPendingTransaction({
+				type: 'distributeQuToShareholders',
+				targetTick: sent.tick,
+				txHash: sent.transactionId,
+				userAddress: selectedAccount.address,
+				data
+			})
+
+			return {
+				success: true,
+				tick: sent.tick,
+				transactionId: sent.transactionId
+			}
+		},
+		[walletClient, selectedAccount, getSendTick, addPendingTransaction]
+	)
+
 	return {
 		// Query methods
 		getPollsByCreator,
@@ -356,6 +403,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 		// State-changing methods (procedures)
 		createPoll,
 		castVote,
-		cancelPoll
+		cancelPoll,
+		distributeQuToShareholders
 	}
 }

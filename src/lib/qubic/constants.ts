@@ -14,6 +14,7 @@ export const QUTIL_CONFIG = {
 
 	MAX_OPTIONS: 64,
 	MAX_NUM_OF_POLLS: 64, // Maximum number of polls (active + inactive)
+	MAX_NEW_POLLS_PER_EPOCH: 16, // Maximum new polls per epoch (QUTIL_MAX_POLL / 4)
 	MAX_ASSETS_PER_POLL: 16,
 	MAX_VOTERS_PER_POLL: 131_072,
 	MAX_VOTERS: 64 * 131_072,
@@ -42,10 +43,44 @@ export const QUTIL_PROCEDURES = {
 	SEND_TO_MANY_BENCHMARK: 3,
 	CREATE_POLL: 4,
 	VOTE: 5,
-	CANCEL_POLL: 6
+	CANCEL_POLL: 6,
+	DISTRIBUTE_QU_TO_SHAREHOLDERS: 7
 } as const
 
 export type QUtilProcedureKey = keyof typeof QUTIL_PROCEDURES
 export type QUtilProcedure = (typeof QUTIL_PROCEDURES)[QUtilProcedureKey]
 
 export const DEFAULT_CHAR_SIZE = 64
+
+// Error codes from the updated smart contract
+export const QUTIL_ERROR_CODES = {
+	// Poll creation errors
+	QUTILLogTypePollCreated: 5,
+	QUTILLogTypeInsufficientFundsForPoll: 6,
+	QUTILLogTypeInvalidPollType: 7,
+	QUTILLogTypeInvalidNumAssetsQubic: 8,
+	QUTILLogTypeInvalidNumAssetsAsset: 9,
+	QUTILLogTypeMaxPollsReached: 22,
+	
+	// Voting errors
+	QUTILLogTypeVoteCast: 10,
+	QUTILLogTypeInsufficientFundsForVote: 11,
+	QUTILLogTypeInvalidPollId: 12,
+	QUTILLogTypePollInactive: 13,
+	QUTILLogTypeInsufficientBalance: 14,
+	QUTILLogTypeInvalidOption: 15,
+	
+	// Result query errors
+	QUTILLogTypeInvalidPollIdResult: 16,
+	QUTILLogTypePollInactiveResult: 17,
+	
+	// Creator query errors
+	QUTILLogTypeNoPollsByCreator: 18,
+	
+	// Poll cancellation errors
+	QUTILLogTypePollCancelled: 19,
+	QUTILLogTypeNotAuthorized: 20,
+	QUTILLogTypeInsufficientFundsForCancel: 21
+} as const
+
+export type QUTIL_ERROR_CODE = (typeof QUTIL_ERROR_CODES)[keyof typeof QUTIL_ERROR_CODES]

@@ -170,7 +170,7 @@ export const CreatePollSchema = z
 			.describe('Minimum amount required to vote'),
 		github_link: z
 			.url('Please enter a valid URL')
-			.startsWith('https://github.com/', 'GitHub link must start with https://github.com/')
+			.startsWith('https://github.com/qubic', 'GitHub link must start with https://github.com/qubic')
 			.describe('GitHub repository link for the poll'),
 		allowed_assets: z
 			.array(AssetSchema)
@@ -218,3 +218,16 @@ export const VoteSchema = z.object({
 		.describe(`Voting option (0 to ${QUTIL_CONFIG.MAX_OPTIONS - 1})`)
 })
 export type VoteFormData = z.infer<typeof VoteSchema>
+
+export const DistributeQuToShareholdersSchema = z.object({
+	asset: AssetSchema.describe('Asset to distribute QU to shareholders of')
+})
+export type DistributeQuToShareholdersFormData = z.infer<typeof DistributeQuToShareholdersSchema>
+
+export const DistributeQuToShareholdersResponseSchema = z.object({
+	shareholders: Int64Schema.describe('Number of shareholders'),
+	totalShares: Int64Schema.describe('Total number of shares'),
+	amountPerShare: Int64Schema.describe('Amount of QU per share'),
+	fees: Int64Schema.describe('Total fees charged')
+})
+export type DistributeQuToShareholdersResponse = z.infer<typeof DistributeQuToShareholdersResponseSchema>

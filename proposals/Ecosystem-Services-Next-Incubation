@@ -1,0 +1,20 @@
+# Ecosystem-Services-Next-Incubation-RFP
+
+## Options
+
+**Option 0) Derivatives DEX**  
+**Option 1) Qubic EVM**
+
+---
+
+### Option 0: Futures / Derivatives DEX  
+A platform where users can trade perpetual contracts without intermediaries.  
+- These contracts function like futures but have no expiry date, enabling traders to hold leveraged positions indefinitely.  
+- Smart contracts manage custody, margining, liquidations, and funding payments transparently and automatically.  
+- This makes the system non-custodial, accessible to anyone with a wallet, and resistant to centralized risks.  
+
+### Option 1: Qubic EVM  
+This would allow the deployment of Solidity code to create mini dApps, primarily for DeFi, to increase the use of QX.  
+- Native dApps on Qubic would still require IPOs.  
+- It’s a complex project to execute because it requires deep expertise in Qubic, the EVM, and the tooling of both systems.  
+

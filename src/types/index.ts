@@ -1,8 +1,9 @@
 import type {
-	CreatePollFormData,
-	GetCurrentResultResponse,
-	QUtilPollResponse,
-	VoteFormData
+    CreatePollFormData,
+    DistributeQuToShareholdersFormData,
+    GetCurrentResultResponse,
+    QUtilPollResponse,
+    VoteFormData
 } from '@/lib/qubic/schemas'
 
 export type Language = {
@@ -49,4 +50,8 @@ export type PendingTransaction =
 			data: {
 				poll_id: number
 			}
+	  })
+	| (BasePendingTransaction & {
+			type: 'distributeQuToShareholders'
+			data: DistributeQuToShareholdersFormData
 	  })

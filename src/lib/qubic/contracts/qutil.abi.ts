@@ -264,6 +264,17 @@ export const QUTIL_ABI: QUtilABI = {
 			name: 'cancelPoll',
 			inputs: [{ name: 'poll_id', type: 'uint64' }],
 			outputs: [{ name: 'success', type: 'bit' }]
+		},
+		distributeQuToShareholders: {
+			index: 7,
+			name: 'distributeQuToShareholders',
+			inputs: [{ name: 'asset', type: 'Asset' }],
+			outputs: [
+				{ name: 'shareholders', type: 'sint64' },
+				{ name: 'totalShares', type: 'sint64' },
+				{ name: 'amountPerShare', type: 'sint64' },
+				{ name: 'fees', type: 'sint64' }
+			]
 		}
 	}
 } as const

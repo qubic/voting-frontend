@@ -5,10 +5,10 @@ import { POLLING_INTERVALS } from '@/constants/polling-intervals'
 import { LogFeature, makeLog } from '@/lib/logger'
 import { useGetTickInfoQuery, useLazyGetTransactionQuery } from '@/store/apis/qubic-rpc'
 import {
-	addPendingTransaction as addPendingTx,
-	initializeFromStorage,
-	removeTransaction as removeTx,
-	updateTransactionStatus as updateTxStatus
+    addPendingTransaction as addPendingTx,
+    initializeFromStorage,
+    removeTransaction as removeTx,
+    updateTransactionStatus as updateTxStatus
 } from '@/store/slices/transactions.slice'
 import type { PendingTransaction, TransactionStatus } from '@/types'
 
@@ -41,6 +41,11 @@ export const TX_MSG = {
 		success: 'Poll cancelled successfully',
 		failed: 'Poll cancellation failed',
 		pending: 'Poll cancellation pending'
+	},
+	distributeQuToShareholders: {
+		success: 'QU distributed to shareholders successfully',
+		failed: 'QU distribution failed',
+		pending: 'QU distribution pending'
 	}
 } as const
 
@@ -79,6 +84,7 @@ type AddPendingTransactionInput =
 	| Omit<Extract<PendingTransaction, { type: 'createPoll' }>, 'status'>
 	| Omit<Extract<PendingTransaction, { type: 'vote' }>, 'status'>
 	| Omit<Extract<PendingTransaction, { type: 'cancelPoll' }>, 'status'>
+	| Omit<Extract<PendingTransaction, { type: 'distributeQuToShareholders' }>, 'status'>
 
 export const useTxMonitor = () => {
 	const dispatch = useDispatch()

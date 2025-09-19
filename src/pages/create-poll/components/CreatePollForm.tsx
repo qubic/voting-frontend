@@ -13,21 +13,21 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
 } from '@/components/ui/select'
 import { TOASTS_DURATIONS } from '@/constants/toasts-durations'
 import { useQUtilContract, useWalletConnect } from '@/hooks'
@@ -117,13 +117,19 @@ export default function CreatePollForm() {
 					<span>Create New Poll</span>
 				</CardTitle>
 				<CardDescription>Create a new voting poll for the Qubic community</CardDescription>
-				<div className="flex items-center space-x-2 pt-2">
+				<div className="flex flex-wrap items-center gap-2 pt-2">
 					<Badge
 						variant="outline"
 						className="bg-warning/10 text-warning border-warning/20"
 					>
 						<Zap className="mr-1 h-3 w-3" />
 						Fee: {QUTIL_CONFIG.POLL_CREATION_FEE.toLocaleString()} QUBIC
+					</Badge>
+					<Badge
+						variant="outline"
+						className="bg-info/10 text-info border-info/20"
+					>
+						Max {QUTIL_CONFIG.MAX_NEW_POLLS_PER_EPOCH} polls per epoch
 					</Badge>
 				</div>
 			</CardHeader>

@@ -1,4 +1,5 @@
-import type { HttpProxy, ProxyOptions } from 'vite'
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'http'
+import type { ProxyOptions } from 'vite'
 
 export const createProxyConfig = (
 	target: string,
@@ -9,8 +10,8 @@ export const createProxyConfig = (
 		target,
 		changeOrigin: true,
 		rewrite: (path: string) => path.replace(rewritePath, ''),
-		configure: (proxy: HttpProxy.Server, options: ProxyOptions) => {
-			proxy.on('proxyReq', (proxyReq, req, res) => {
+		configure: (proxy: any, options: ProxyOptions) => {
+			proxy.on('proxyReq', (proxyReq: ClientRequest, req: IncomingMessage, res: ServerResponse) => {
 				res.setHeader('Access-Control-Allow-Origin', '*')
 				res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, PATCH, POST, DELETE')
 				res.setHeader(
@@ -34,7 +35,7 @@ export const createProxyConfig = (
 				proxyReq.setHeader('Authorization', req.headers.authorization || '')
 			})
 
-			proxy.on('error', (err, _req, res) => {
+			proxy.on('error', (err: Error, _req: IncomingMessage, res: ServerResponse) => {
 				console.error(`Proxy error: ${err.message}`)
 				res.writeHead(500, { 'Content-Type': 'application/json' })
 				res.end(JSON.stringify({ error: 'Proxy error', details: err.message }))
