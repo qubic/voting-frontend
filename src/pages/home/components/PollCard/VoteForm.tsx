@@ -72,16 +72,6 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 			return { isValid: false, errorMessage: 'No wallet account selected' }
 		}
 
-		// Check if user has enough balance for the required amount + fee
-		const totalNeeded = data.amount + QUTIL_CONFIG.VOTE_FEE
-
-		if (totalNeeded > selectedAccount.amount) {
-			return {
-				isValid: false,
-				errorMessage: `Insufficient QUBIC balance. You have ${selectedAccount.amount.toLocaleString()} QUBIC but need ${totalNeeded.toLocaleString()} QUBIC (${data.amount.toLocaleString()} required + ${QUTIL_CONFIG.VOTE_FEE} fee) to vote.`
-			}
-		}
-
 		// Check if user meets the minimum amount requirement
 		if (data.amount < poll.min_amount) {
 			return {
@@ -90,8 +80,28 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 			}
 		}
 
-		// For asset polls, check if user has any of the allowed assets with sufficient balance
+		// For QUBIC polls, check if user has enough QUBIC for amount + fee
+		if (poll.poll_type === POLL_TYPE.QUBIC) {
+			const totalNeeded = data.amount + QUTIL_CONFIG.VOTE_FEE
+
+			if (totalNeeded > selectedAccount.amount) {
+				return {
+					isValid: false,
+					errorMessage: `Insufficient QUBIC balance. You have ${selectedAccount.amount.toLocaleString()} QUBIC but need ${totalNeeded.toLocaleString()} QUBIC (${data.amount.toLocaleString()} required + ${QUTIL_CONFIG.VOTE_FEE} fee) to vote.`
+				}
+			}
+		}
+
+		// For asset polls, check if user has the required asset balance + enough QUBIC for fee
 		if (poll.poll_type === POLL_TYPE.ASSET) {
+			// Check if user has enough QUBIC for the voting fee only
+			if (QUTIL_CONFIG.VOTE_FEE > selectedAccount.amount) {
+				return {
+					isValid: false,
+					errorMessage: `Insufficient QUBIC for voting fee. You have ${selectedAccount.amount.toLocaleString()} QUBIC but need ${QUTIL_CONFIG.VOTE_FEE} QUBIC for the fee.`
+				}
+			}
+
 			// First check if user has any of the allowed assets at all
 			if (!hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)) {
 				return {
@@ -100,17 +110,13 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 				}
 			}
 
-			// Then check if any of the allowed assets have sufficient balance
+			// Then check if any of the allowed assets have sufficient balance for the vote amount
 			if (
-				!hasSufficientAssetBalance(
-					pollAllowedAssets,
-					selectedAccount.assets,
-					poll.min_amount
-				)
+				!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, data.amount)
 			) {
 				return {
 					isValid: false,
-					errorMessage: `You have some of the allowed assets but not enough balance. Required minimum: ${poll.min_amount.toLocaleString()} assets.`
+					errorMessage: `Insufficient asset balance. You need at least ${data.amount.toLocaleString()} of an allowed asset to vote.`
 				}
 			}
 		}
@@ -123,14 +129,6 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 		if (!selectedAccount || (form.watch('amount') || 0) <= 0) return null
 
 		const amount = form.watch('amount') || 0
-		const totalNeeded = amount + QUTIL_CONFIG.VOTE_FEE
-
-		if (totalNeeded > selectedAccount.amount) {
-			return {
-				type: 'error' as const,
-				message: `Cannot vote: Required amount + fee (${totalNeeded.toLocaleString()} QUBIC) exceeds your balance (${selectedAccount.amount.toLocaleString()} QUBIC)`
-			}
-		}
 
 		if (amount < poll.min_amount) {
 			return {
@@ -139,14 +137,34 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 			}
 		}
 
-		if (
-			poll.poll_type === POLL_TYPE.ASSET &&
-			!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, poll.min_amount)
-		) {
-			return {
-				type: 'error' as const,
-				message:
-					"Cannot vote: You don't have sufficient balance of any allowed assets for this poll"
+		// For QUBIC polls, check QUBIC balance for amount + fee
+		if (poll.poll_type === POLL_TYPE.QUBIC) {
+			const totalNeeded = amount + QUTIL_CONFIG.VOTE_FEE
+
+			if (totalNeeded > selectedAccount.amount) {
+				return {
+					type: 'error' as const,
+					message: `Cannot vote: Required amount + fee (${totalNeeded.toLocaleString()} QUBIC) exceeds your balance (${selectedAccount.amount.toLocaleString()} QUBIC)`
+				}
+			}
+		}
+
+		// For asset polls, check asset balance and QUBIC for fee
+		if (poll.poll_type === POLL_TYPE.ASSET) {
+			// Check if user has enough QUBIC for the voting fee
+			if (QUTIL_CONFIG.VOTE_FEE > selectedAccount.amount) {
+				return {
+					type: 'error' as const,
+					message: `Cannot vote: Insufficient QUBIC for voting fee (need ${QUTIL_CONFIG.VOTE_FEE} QUBIC, have ${selectedAccount.amount.toLocaleString()} QUBIC)`
+				}
+			}
+
+			// Check if user has sufficient asset balance
+			if (!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, amount)) {
+				return {
+					type: 'error' as const,
+					message: `Cannot vote: You don't have sufficient balance of any allowed assets (need ${amount.toLocaleString()} assets)`
+				}
 			}
 		}
 
@@ -160,24 +178,25 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 		if (!selectedAccount || form.formState.isSubmitting) return false
 
 		const amount = form.watch('amount') || 0
-		const totalNeeded = amount + QUTIL_CONFIG.VOTE_FEE
 
-		// For QUBIC polls, only check QUBIC balance and minimum amount
+		// Check minimum amount requirement for all poll types
+		if (amount < poll.min_amount) return false
+
+		// For QUBIC polls, check QUBIC balance for amount + fee
 		if (poll.poll_type === POLL_TYPE.QUBIC) {
-			return totalNeeded <= selectedAccount.amount && amount >= poll.min_amount
+			const totalNeeded = amount + QUTIL_CONFIG.VOTE_FEE
+			return totalNeeded <= selectedAccount.amount
 		}
 
-		// For asset polls, check asset balance requirements
+		// For asset polls, check QUBIC balance for fee and asset balance for amount
 		if (poll.poll_type === POLL_TYPE.ASSET) {
-			return (
-				totalNeeded <= selectedAccount.amount &&
-				amount >= poll.min_amount &&
-				hasSufficientAssetBalance(
-					pollAllowedAssets,
-					selectedAccount.assets,
-					poll.min_amount
-				)
+			const hasEnoughQubicForFee = QUTIL_CONFIG.VOTE_FEE <= selectedAccount.amount
+			const hasEnoughAssets = hasSufficientAssetBalance(
+				pollAllowedAssets,
+				selectedAccount.assets,
+				amount
 			)
+			return hasEnoughQubicForFee && hasEnoughAssets
 		}
 
 		return false
@@ -388,20 +407,48 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 									{isQubicPollType ? 'QUBIC' : 'assets'} (you need this but don't
 									spend it)
 								</p>
-								<p className="text-muted-foreground mt-1 text-sm">
-									Total needed: {(form.watch('amount') || 0).toLocaleString()} +{' '}
-									{QUTIL_CONFIG.VOTE_FEE} ={' '}
-									{(
-										(form.watch('amount') || 0) + QUTIL_CONFIG.VOTE_FEE
-									).toLocaleString()}{' '}
-									QUBIC (required + fee)
-								</p>
-								{(form.watch('amount') || 0) + QUTIL_CONFIG.VOTE_FEE >
-									selectedAccount.amount && (
-										<p className="mt-1 text-sm text-red-600 dark:text-red-400">
-											⚠️ Insufficient balance for required amount + fee
+								{isQubicPollType ? (
+									<>
+										<p className="text-muted-foreground mt-1 text-sm">
+											Total needed:{' '}
+											{(form.watch('amount') || 0).toLocaleString()} +{' '}
+											{QUTIL_CONFIG.VOTE_FEE} ={' '}
+											{(
+												(form.watch('amount') || 0) + QUTIL_CONFIG.VOTE_FEE
+											).toLocaleString()}{' '}
+											QUBIC (required + fee)
 										</p>
-									)}
+										{(form.watch('amount') || 0) + QUTIL_CONFIG.VOTE_FEE >
+											selectedAccount.amount && (
+												<p className="mt-1 text-sm text-red-600 dark:text-red-400">
+													⚠️ Insufficient QUBIC balance for required amount +
+													fee
+												</p>
+											)}
+									</>
+								) : (
+									<>
+										<p className="text-muted-foreground mt-1 text-sm">
+											Total needed:{' '}
+											{(form.watch('amount') || 0).toLocaleString()} assets +{' '}
+											{QUTIL_CONFIG.VOTE_FEE} QUBIC (fee only)
+										</p>
+										{QUTIL_CONFIG.VOTE_FEE > selectedAccount.amount && (
+											<p className="mt-1 text-sm text-red-600 dark:text-red-400">
+												⚠️ Insufficient QUBIC balance for voting fee
+											</p>
+										)}
+										{!hasSufficientAssetBalance(
+											pollAllowedAssets,
+											selectedAccount.assets,
+											form.watch('amount') || 0
+										) && (
+												<p className="mt-1 text-sm text-red-600 dark:text-red-400">
+													⚠️ Insufficient asset balance
+												</p>
+											)}
+									</>
+								)}
 							</>
 						)}
 					</div>
