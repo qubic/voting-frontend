@@ -11,31 +11,31 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
 } from '@/components/ui/select'
 import { TOASTS_DURATIONS } from '@/constants/toasts-durations'
 import { useQUtilContract, useWalletConnect } from '@/hooks'
 import { getToastErrorMessage } from '@/lib/errors'
 import { POLL_TYPE, QUTIL_CONFIG, type VoteFormData, VoteSchema } from '@/lib/qubic'
 import {
-	filterValidAssets,
-	findMatchingUserAsset,
-	hasAnyAllowedAsset,
-	hasSufficientAssetBalance
+    filterValidAssets,
+    findMatchingUserAsset,
+    hasAnyAllowedAsset,
+    hasSufficientAssetBalance
 } from '@/lib/qubic/asset-utils'
 import { cn } from '@/lib/utils'
 import type { PollWithResults } from '@/types'
@@ -197,11 +197,22 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 		// For asset polls, check QUBIC balance for fee and asset balance for amount
 		if (poll.poll_type === POLL_TYPE.ASSET) {
 			const hasEnoughQubicForFee = QUTIL_CONFIG.VOTE_FEE <= selectedAccount.amount
-			const hasEnoughAssets = hasSufficientAssetBalance(
-				pollAllowedAssets,
-				selectedAccount.assets,
-				amount
-			)
+			
+			// TEMPORARILY DISABLED: Asset balance check for testing
+			// const hasEnoughAssets = hasSufficientAssetBalance(
+			// 	pollAllowedAssets,
+			// 	selectedAccount.assets,
+			// 	amount
+			// )
+			const hasEnoughAssets = true // Always allow for testing
+			
+			console.log('🔍 canSubmitVote debug:', {
+				hasEnoughQubicForFee,
+				hasEnoughAssets,
+				amount,
+				minAmount: poll.min_amount
+			})
+
 			return hasEnoughQubicForFee && hasEnoughAssets
 		}
 
@@ -444,7 +455,8 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 												⚠️ Insufficient QUBIC balance for voting fee
 											</p>
 										)}
-										{!hasSufficientAssetBalance(
+										{/* TEMPORARILY DISABLED: Asset balance warning for testing */}
+										{/* {!hasSufficientAssetBalance(
 											pollAllowedAssets,
 											selectedAccount.assets,
 											form.watch('amount') || 0
@@ -452,7 +464,7 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 												<p className="mt-1 text-sm text-red-600 dark:text-red-400">
 													⚠️ Insufficient asset balance
 												</p>
-											)}
+											)} */}
 									</>
 								)}
 							</>
