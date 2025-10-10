@@ -1,3 +1,6 @@
+import dotenv from "dotenv"
+dotenv.config()
+
 import { exec } from 'child_process'
 import express from 'express'
 import { promisify } from 'util'
@@ -24,7 +27,7 @@ function requireApiKey(req, res, next) {
 app.post('/api/update-polls', requireApiKey, async (req, res) => {
   try {
     console.log('🔄 Updating polls...')
-    await execAsync('bun run scripts/generate-polls.ts')
+    await execAsync('/root/.bun/bin/bun run scripts/generate-polls.ts')
     
     res.json({ 
       success: true, 
@@ -41,7 +44,7 @@ app.post('/api/update-polls', requireApiKey, async (req, res) => {
 app.post('/api/update-assets', requireApiKey, async (req, res) => {
   try {
     console.log('🔄 Updating assets...')
-    await execAsync('bun run scripts/generate-assets.ts')
+    await execAsync('/root/.bun/bin/bun run scripts/generate-assets.ts')
     
     res.json({ 
       success: true, 
