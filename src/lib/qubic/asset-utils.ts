@@ -19,9 +19,10 @@ export interface UserAsset {
  * Check if a poll asset matches a user asset
  */
 export const isAssetMatch = (pollAsset: PollAsset, userAsset: UserAsset): boolean => {
-	return (
-		pollAsset.issuer === userAsset.issuerIdentity && pollAsset.assetName === userAsset.assetName
-	)
+	const issuerMatch = pollAsset.issuer === userAsset.issuerIdentity
+	const nameMatch = pollAsset.assetName === userAsset.assetName
+	
+	return issuerMatch && nameMatch
 }
 
 /**
