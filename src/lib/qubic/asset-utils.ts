@@ -91,5 +91,14 @@ export const filterValidAssets = (assets: PollAsset[]): PollAsset[] => {
 		inputAssets: assets,
 		filteredAssets: assets.filter((asset) => asset.issuer !== NULL_ID && asset.assetName !== 'N/A')
 	})
+	
+	// Enhanced debugging - show first few assets
+	console.log('🔍 First 3 input assets:', assets.slice(0, 3).map(asset => ({
+		issuer: asset.issuer,
+		assetName: asset.assetName,
+		isNullId: asset.issuer === NULL_ID,
+		isNA: asset.assetName === 'N/A'
+	})))
+	
 	return assets.filter((asset) => asset.issuer !== NULL_ID && asset.assetName !== 'N/A')
 }
