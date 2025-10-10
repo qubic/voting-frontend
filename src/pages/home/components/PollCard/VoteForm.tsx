@@ -33,9 +33,7 @@ import { getToastErrorMessage } from '@/lib/errors'
 import { POLL_TYPE, QUTIL_CONFIG, type VoteFormData, VoteSchema } from '@/lib/qubic'
 import {
     filterValidAssets,
-    findMatchingUserAsset,
-    hasAnyAllowedAsset,
-    hasSufficientAssetBalance
+    findMatchingUserAsset
 } from '@/lib/qubic/asset-utils'
 import { cn } from '@/lib/utils'
 import type { PollWithResults } from '@/types'
@@ -51,12 +49,7 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 	const { selectedAccount } = useWalletConnect()
 	const { castVote } = useQUtilContract()
 
-	// Debug: Log poll data when component mounts
-	console.log('🔍 VoteForm mounted with poll:', poll)
-	console.log('🔍 Poll ID:', poll.id)
-	console.log('🔍 Poll type check:', poll.poll_type === POLL_TYPE.ASSET ? 'ASSET' : 'QUBIC')
-	console.log('🔍 Poll allowed_assets length:', poll.allowed_assets?.length || 0)
-	console.log('🔍 Poll num_assets:', poll.num_assets)
+	// TODO: Remove debug logs when SC issuer issue is fixed
 
 	const form = useForm<VoteFormData>({
 		resolver: zodResolver(VoteSchema),
@@ -109,12 +102,20 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 				}
 			}
 
-			// DISABLED: Asset validation because smart contract returns NULL_ID for issuers
-			// The poll was created with invalid issuer addresses, so we can't validate asset ownership
-			// Users can still vote, but asset validation is bypassed
-			console.log('⚠️ Asset validation disabled: Smart contract returns NULL_ID for issuers')
-			console.log('Poll allowed assets:', pollAllowedAssets)
-			console.log('User assets:', selectedAccount.assets)
+			// TEMPORARILY DISABLED: Asset validation due to SC returning NULL_ID for issuers
+			// TODO: Re-enable when SC issuer issue is fixed
+			// if (!hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)) {
+			// 	return {
+			// 		isValid: false,
+			// 		errorMessage: `You don't have any of the assets required for this poll. This poll only allows specific assets.`
+			// 	}
+			// }
+			// if (!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, data.amount)) {
+			// 	return {
+			// 		isValid: false,
+			// 		errorMessage: `Insufficient asset balance. You need at least ${data.amount.toLocaleString()} of an allowed asset to vote.`
+			// 	}
+			// }
 		}
 
 		return { isValid: true, errorMessage: '' }
@@ -155,8 +156,8 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 				}
 			}
 
-			// DISABLED: Asset balance check because smart contract returns NULL_ID for issuers
-			// Users can vote as long as they have enough QUBIC for the fee
+			// TEMPORARILY DISABLED: Asset balance check due to SC returning NULL_ID for issuers
+			// TODO: Re-enable when SC issuer issue is fixed
 			// if (!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, amount)) {
 			// 	return {
 			// 		type: 'error' as const,
@@ -189,18 +190,15 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 		if (poll.poll_type === POLL_TYPE.ASSET) {
 			const hasEnoughQubicForFee = QUTIL_CONFIG.VOTE_FEE <= selectedAccount.amount
 			
-			// DISABLED: Asset balance check because smart contract returns NULL_ID for issuers
-			// Users can vote as long as they have enough QUBIC for the fee
+			// TEMPORARILY DISABLED: Asset balance check due to SC returning NULL_ID for issuers
+			// TODO: Re-enable when SC issuer issue is fixed
+			// const hasEnoughAssets = hasSufficientAssetBalance(
+			// 	pollAllowedAssets,
+			// 	selectedAccount.assets,
+			// 	amount
+			// )
 			const hasEnoughAssets = true // Always allow since we can't validate assets
 			
-			console.log('🔍 canSubmitVote debug:', {
-				hasEnoughQubicForFee,
-				hasEnoughAssets,
-				amount,
-				minAmount: poll.min_amount,
-				reason: 'Asset validation disabled due to NULL_ID issuers'
-			})
-
 			return hasEnoughQubicForFee && hasEnoughAssets
 		}
 
@@ -210,9 +208,9 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 	const getAssetBalanceDisplay = (): React.ReactNode => {
 		if (!selectedAccount || poll.poll_type !== POLL_TYPE.ASSET) return null
 
-		// DISABLED: Asset validation because smart contract returns NULL_ID for issuers
+		// TEMPORARILY DISABLED: Asset validation due to SC returning NULL_ID for issuers
+		// TODO: Re-enable when SC issuer issue is fixed
 		// const userHasAnyAllowedAsset = hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)
-
 		// if (!userHasAnyAllowedAsset) {
 		// 	return (
 		// 		<div className="text-sm text-red-600 dark:text-red-400">

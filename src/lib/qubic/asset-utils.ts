@@ -22,22 +22,6 @@ export const isAssetMatch = (pollAsset: PollAsset, userAsset: UserAsset): boolea
 	const issuerMatch = pollAsset.issuer === userAsset.issuerIdentity
 	const nameMatch = pollAsset.assetName === userAsset.assetName
 	
-	// Debug logging
-	console.log('🔍 Asset matching debug:', {
-		pollAsset: {
-			issuer: pollAsset.issuer,
-			assetName: pollAsset.assetName
-		},
-		userAsset: {
-			issuerIdentity: userAsset.issuerIdentity,
-			assetName: userAsset.assetName,
-			ownedAmount: userAsset.ownedAmount
-		},
-		issuerMatch,
-		nameMatch,
-		fullMatch: issuerMatch && nameMatch
-	})
-	
 	return issuerMatch && nameMatch
 }
 
@@ -87,18 +71,5 @@ export const getUserAssetBalance = (pollAsset: PollAsset, userAssets: UserAsset[
  * Filter out invalid assets (NULL_ID or 'N/A')
  */
 export const filterValidAssets = (assets: PollAsset[]): PollAsset[] => {
-	console.log('🔍 filterValidAssets debug:', {
-		inputAssets: assets,
-		filteredAssets: assets.filter((asset) => asset.issuer !== NULL_ID && asset.assetName !== 'N/A')
-	})
-	
-	// Enhanced debugging - show first few assets
-	console.log('🔍 First 3 input assets:', assets.slice(0, 3).map(asset => ({
-		issuer: asset.issuer,
-		assetName: asset.assetName,
-		isNullId: asset.issuer === NULL_ID,
-		isNA: asset.assetName === 'N/A'
-	})))
-	
 	return assets.filter((asset) => asset.issuer !== NULL_ID && asset.assetName !== 'N/A')
 }
