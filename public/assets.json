@@ -1,0 +1,132 @@
+[
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND182",
+    "universeIndex": 20
+  },
+  {
+    "issuerIdentity": "QMINEQQXYBEGBHNSUPOUYDIQKZPCBPQIIHUUZMCPLBPCCAIARVZBTYKGFCWM",
+    "name": "QMINE",
+    "universeIndex": 14778544
+  },
+  {
+    "issuerIdentity": "GARTHFANXMPXMDPEZFQPWFPYMHOAWTKILINCTRMVLFFVATKVJRKEDYXGHJBF",
+    "name": "GARTH",
+    "universeIndex": 13673074
+  },
+  {
+    "issuerIdentity": "CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL",
+    "name": "CFB",
+    "universeIndex": 12267528
+  },
+  {
+    "issuerIdentity": "QWALLETSGQVAGBHUCVVXWZXMBKQBPQQSHRYKZGEJWFVNUFCEDDPRMKTAUVHA",
+    "name": "QWALLET",
+    "universeIndex": 9284980
+  },
+  {
+    "issuerIdentity": "CODEDBUUDDYHECBVSUONSSWTOJRCLZSWHFHZIUWVFGNWVCKIWJCSDSWGQAAI",
+    "name": "CODED",
+    "universeIndex": 6015690
+  },
+  {
+    "issuerIdentity": "TFUYVBXYIYBVTEMJHAJGEJOOZHJBQFVQLTBBKMEHPEVIZFXZRPEYFUWGTIWG",
+    "name": "QFT",
+    "universeIndex": 2741973
+  },
+  {
+    "issuerIdentity": "VALISTURNWYFQAMVLAKJVOKJQKKBXZZFEASEYCAGNCFMZARJEMMFSESEFOWM",
+    "name": "VSTB001",
+    "universeIndex": 2419425
+  },
+  {
+    "issuerIdentity": "QCAPWMYRSHLBJHSTTZQVCIBARVOASKDENASAKNOBRGPFWWKRCUVUAXYEZVOG",
+    "name": "QCAP",
+    "universeIndex": 2037116
+  },
+  {
+    "issuerIdentity": "QXMRTKAIIGLUREPIQPCMHCKWSIPDTUYFCFNYXQLTECSUJVYEMMDELBMDOEYB",
+    "name": "QXMR",
+    "universeIndex": 1775022
+  },
+  {
+    "issuerIdentity": "ZWQHZOEAWYKSGDPWWAQBAOKECCSASFCMLYZOJGBXNABXVZJZXKXOWRTFIQHC",
+    "name": "MATILDA",
+    "universeIndex": 719229
+  },
+  {
+    "issuerIdentity": "QXTRMABNAJWNQBKYYNUNVYAJAQMDLIKOFXNGTRVYRDQMNZNNMZDGBDNGYMRM",
+    "name": "QXTRADE",
+    "universeIndex": 235834
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QDRAW",
+    "universeIndex": 19
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QBAY",
+    "universeIndex": 18
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "MSVAULT",
+    "universeIndex": 17
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QUTIL",
+    "universeIndex": 16
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QEARN",
+    "universeIndex": 15
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QTRY",
+    "universeIndex": 12
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QX",
+    "universeIndex": 11
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "RANDOM",
+    "universeIndex": 10
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QVAULT",
+    "universeIndex": 9
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QBOND",
+    "universeIndex": 8
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "RL",
+    "universeIndex": 7
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QSWAP",
+    "universeIndex": 6
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "MLM",
+    "universeIndex": 5
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "NOST",
+    "universeIndex": 0
+  }
+]

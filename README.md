@@ -13,6 +13,9 @@ A modern React application for participating in Qubic governance by voting on pr
 - 🔄 **Real-time Updates**: Live transaction monitoring and polling data
 - 🎯 **Type Safety**: Full TypeScript support with strict type checking
 - 🔗 **Qubic Integration**: Direct integration with Qubic network and QUtil contract
+- 🚀 **Server-Side Caching**: Reduces API calls with cached assets and polls data
+- 🔒 **Secure API**: Protected endpoints for automated data updates
+- 📋 **Asset Reference**: Easy asset selection with copy-to-clipboard functionality
 
 ## 🏗️ Architecture
 
@@ -54,7 +57,13 @@ The application is built with a modern, scalable architecture:
 
 3. **Environment Setup**
 
-    Create a `.env` file in the root directory with the following variables:
+    Copy the environment template and configure your settings:
+
+    ```bash
+    cp env.example .env
+    ```
+
+    Edit `.env` with your values:
 
     ```bash
     # Qubic Network Configuration
@@ -68,6 +77,10 @@ The application is built with a modern, scalable architecture:
     VITE_APP_TITLE="Qubic Voting"
     VITE_APP_DESCRIPTION="Community governance voting system"
     VITE_APP_URL=https://your-app-url.com
+
+    # API Security (for server-side caching)
+    API_KEY=your-secret-api-key-here
+    PORT=3001
     ```
 
 ## 🛠️ Development
@@ -75,17 +88,28 @@ The application is built with a modern, scalable architecture:
 ### Start Development Server
 
 ```bash
+# Frontend only
 bun run dev
+
+# Frontend + API server
+bun run dev:full
 ```
 
-The application will be available at `http://localhost:5173`
+The application will be available at `http://localhost:5173`  
+The API server will be available at `http://localhost:3001`
 
 ### Available Scripts
 
 | Command                   | Description                              |
 | ------------------------- | ---------------------------------------- |
 | `bun run dev`             | Start development server with hot reload |
+| `bun run dev:full`        | Start frontend + API server together    |
+| `bun run server`          | Start API server only                   |
 | `bun run build`           | Build for production                     |
+| `bun run build:with-data` | Build with fresh cached data            |
+| `bun run generate-assets` | Generate assets cache                    |
+| `bun run generate-polls`  | Generate polls cache                     |
+| `bun run generate-all`    | Generate both assets and polls cache    |
 | `bun run preview`         | Preview production build locally         |
 | `bun run lint`            | Run ESLint to check code quality         |
 | `bun run lint:fix`        | Auto-fix ESLint issues                   |
@@ -108,6 +132,41 @@ The application will be available at `http://localhost:5173`
     ```
 
 The built files will be in the `dist/` directory, ready for deployment.
+
+## 🚀 Server-Side Caching
+
+The application includes server-side caching to reduce API calls and improve performance:
+
+### API Endpoints
+
+**🔒 Protected Endpoints (require API key):**
+- `POST /api/update-polls` - Updates polls data
+- `POST /api/update-assets` - Updates assets data
+
+**📊 Public Endpoints:**
+- `GET /api/health` - Server health check
+
+### Automated Updates
+
+Set up cron jobs on your server to automatically update data:
+
+```bash
+# Add to crontab (crontab -e)
+# Update polls every minute
+* * * * * curl -X POST http://localhost:3001/api/update-polls -H "x-api-key: your-secret-api-key-here"
+
+# Update assets every hour  
+0 * * * * curl -X POST http://localhost:3001/api/update-assets -H "x-api-key: your-secret-api-key-here"
+```
+
+### Benefits
+
+- 🚀 **Faster loading** - Static JSON vs smart contract calls
+- 💰 **Lower costs** - Fewer RPC calls
+- 🛡️ **Rate limiting** - Server controls API usage
+- 🔄 **Auto-updates** - Fresh data every minute/hour
+- 📱 **Better UX** - Asset reference list with copy buttons
+- 🔐 **Secure** - Protected API endpoints prevent abuse
 
 ## 📁 Project Structure
 
@@ -132,6 +191,13 @@ src/
 ├── services/         # External service integrations
 ├── store/            # Redux store and slices
 └── types/            # TypeScript type definitions
+scripts/
+├── generate-assets.ts # Assets sync script
+└── generate-polls.ts  # Polls sync script
+public/
+├── assets.json       # Generated asset cache
+└── polls.json        # Generated polls cache
+server.js             # Secure API server
 ```
 
 ## 🔧 Key Technologies
@@ -142,6 +208,7 @@ src/
 - **State Management**: Redux Toolkit
 - **Routing**: React Router 7
 - **Wallet Integration**: WalletConnect
+- **API Server**: Express.js with secure endpoints
 - **Testing**: Vitest
 - **Code Quality**: ESLint + Prettier
 - **Package Manager**: Bun (with npm/yarn fallback)
