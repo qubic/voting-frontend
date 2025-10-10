@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SelectGroup, Separator } from '@radix-ui/react-select'
 
+import { AssetsList } from '@/components/AssetsList'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -249,6 +250,8 @@ export default function CreatePollForm() {
 										Add Asset
 									</Button>
 								</div>
+
+								<AssetsList />
 
 								{fields.map((field, index) => (
 									<Card key={field.id} className="bg-muted/30">
