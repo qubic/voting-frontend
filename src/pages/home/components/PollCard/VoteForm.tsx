@@ -107,6 +107,8 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 			console.log('🔍 DEBUG: Asset validation disabled for testing')
 			console.log('Poll allowed assets:', pollAllowedAssets)
 			console.log('User assets:', selectedAccount.assets)
+			console.log('Raw poll data:', poll)
+			console.log('Poll allowed_assets field:', poll.allowed_assets)
 			
 			// First check if user has any of the allowed assets at all
 			// if (!hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)) {

@@ -87,5 +87,9 @@ export const getUserAssetBalance = (pollAsset: PollAsset, userAssets: UserAsset[
  * Filter out invalid assets (NULL_ID or 'N/A')
  */
 export const filterValidAssets = (assets: PollAsset[]): PollAsset[] => {
+	console.log('🔍 filterValidAssets debug:', {
+		inputAssets: assets,
+		filteredAssets: assets.filter((asset) => asset.issuer !== NULL_ID && asset.assetName !== 'N/A')
+	})
 	return assets.filter((asset) => asset.issuer !== NULL_ID && asset.assetName !== 'N/A')
 }
