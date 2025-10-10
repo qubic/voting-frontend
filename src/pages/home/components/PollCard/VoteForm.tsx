@@ -51,6 +51,12 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 	const { selectedAccount } = useWalletConnect()
 	const { castVote } = useQUtilContract()
 
+	// Debug: Log poll data when component mounts
+	console.log('🔍 VoteForm mounted with poll:', poll)
+	console.log('🔍 Poll type check:', poll.poll_type === POLL_TYPE.ASSET ? 'ASSET' : 'QUBIC')
+	console.log('🔍 Poll allowed_assets length:', poll.allowed_assets?.length || 0)
+	console.log('🔍 Poll num_assets:', poll.num_assets)
+
 	const form = useForm<VoteFormData>({
 		resolver: zodResolver(VoteSchema),
 		defaultValues: {
