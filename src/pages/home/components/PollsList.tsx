@@ -5,9 +5,9 @@ import { RefreshCw, TrendingUp } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { useCachedPolls } from '@/hooks'
 import { useWalletConnect } from '@/hooks'
 
+import { usePolls } from '../hooks'
 import type { PollsListType } from '../types'
 
 import { PollCard } from './PollCard'
@@ -47,18 +47,15 @@ interface PollsListProps {
 }
 
 export default function PollsList({ type = 'active' }: PollsListProps) {
-	const { polls, loading, error, refresh } = useCachedPolls()
-	const { isWalletConnected, handleConnectWallet, selectedAccount } = useWalletConnect()
+	const { polls, loading, error, refresh } = usePolls(type)
+	const { isWalletConnected, handleConnectWallet } = useWalletConnect()
 
 	// Filter and prepare data for display
 	const activePolls = polls.filter((poll) => poll.is_active === 1)
 	const inactivePolls = polls.filter((poll) => poll.is_active === 0)
-	const myPolls = polls.filter((poll) => poll.creator === selectedAccount?.address)
 
 	const pollsToShow =
-		type === 'active' ? activePolls : 
-		type === 'inactive' ? inactivePolls : 
-		type === 'my-polls' ? myPolls : polls
+		type === 'active' ? activePolls : type === 'inactive' ? inactivePolls : polls // my-polls: show all polls by the user
 
 	const uiConfig = POLLS_LIST_UI_CONFIGS[type]
 

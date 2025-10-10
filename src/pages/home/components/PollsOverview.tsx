@@ -1,10 +1,10 @@
 import { RefreshCw, TrendingUp } from 'lucide-react'
-import { useMemo } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useCachedPolls, useLatestStats } from '@/hooks'
+import { useLatestStats, useQUtilContract } from '@/hooks'
 
 interface PollsOverviewData {
 	totalPolls: number
@@ -12,98 +12,94 @@ interface PollsOverviewData {
 }
 
 export default function PollsOverview() {
-	const { polls, loading: pollsLoading, lastUpdated } = useCachedPolls()
+	const [isLoading, setIsLoading] = useState(false)
+	const [overviewData, setOverviewData] = useState<PollsOverviewData>({
+		totalPolls: 0,
+		activePolls: 0
+	})
+
+	const { getCurrentPollId } = useQUtilContract()
+
 	const { latestStats, isLoading: statsLoading, refetch } = useLatestStats()
 
-	// Calculate overview data from cached polls
-	const overviewData = useMemo(() => {
-		const activePolls = polls.filter((poll) => poll.is_active === 1)
-		return {
-			totalPolls: polls.length,
-			activePolls: activePolls.length
-		}
-	}, [polls])
+	const loadPollsOverview = useCallback(async () => {
+		setIsLoading(true)
+		try {
+			const result = await getCurrentPollId()
 
-	const isLoading = pollsLoading || statsLoading
+			if (result.success) {
+				const { current_poll_id, active_count } = result.data
+				setOverviewData({
+					totalPolls: current_poll_id,
+					activePolls: active_count
+				})
+			}
+		} catch (error) {
+			console.error('Failed to load polls overview:', error)
+		} finally {
+			setIsLoading(false)
+		}
+	}, [getCurrentPollId])
+
+	const handleRefresh = useCallback(() => {
+		loadPollsOverview()
+		refetch()
+	}, [loadPollsOverview, refetch])
+
+	useEffect(() => {
+		loadPollsOverview()
+	}, [loadPollsOverview])
 
 	return (
-		<div className="grid gap-4 md:grid-cols-2">
-			{/* Polls Overview */}
-			<Card>
-				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-					<CardTitle className="text-sm font-medium">Polls Overview</CardTitle>
+		<Card>
+			<CardHeader>
+				<div className="flex items-center justify-between">
+					<CardTitle className="flex items-center gap-2 text-xl">
+						<TrendingUp className="h-5 w-5" />
+						Polls Overview
+					</CardTitle>
 					<Button
 						variant="outline"
+						className="text-xs"
 						size="sm"
-						onClick={() => window.location.reload()}
-						disabled={isLoading}
+						onClick={handleRefresh}
+						disabled={isLoading || statsLoading}
 					>
-						<RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+						<RefreshCw className={`mr-1 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
 						Refresh
 					</Button>
-				</CardHeader>
-				<CardContent>
-					{isLoading ? (
-						<div className="space-y-2">
-							<Skeleton className="h-4 w-[100px]" />
-							<Skeleton className="h-4 w-[80px]" />
-						</div>
-					) : (
-						<div className="space-y-2">
-							<div className="flex items-center justify-between">
-								<span className="text-sm text-muted-foreground">Total Polls</span>
-								<span className="text-2xl font-bold">{overviewData.totalPolls}</span>
+				</div>
+			</CardHeader>
+			<CardContent>
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+					<div className="text-center">
+						{isLoading ? (
+							<Skeleton className="mx-auto mb-1 h-7 w-16" />
+						) : (
+							<div className="text-primary text-2xl font-bold">
+								{overviewData.activePolls}
 							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-sm text-muted-foreground">Active Polls</span>
-								<span className="text-2xl font-bold text-green-600">{overviewData.activePolls}</span>
-							</div>
-							{lastUpdated && (
-								<div className="text-xs text-muted-foreground">
-									Last updated: {new Date(lastUpdated).toLocaleString()}
-								</div>
-							)}
-						</div>
-					)}
-				</CardContent>
-			</Card>
-
-			{/* Latest Stats */}
-			<Card>
-				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-					<CardTitle className="text-sm font-medium">Latest Stats</CardTitle>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => refetch()}
-						disabled={statsLoading}
-					>
-						<TrendingUp className={`mr-2 h-4 w-4 ${statsLoading ? 'animate-spin' : ''}`} />
-						Refresh
-					</Button>
-				</CardHeader>
-				<CardContent>
-					{statsLoading ? (
-						<div className="space-y-2">
-							<Skeleton className="h-4 w-[100px]" />
-							<Skeleton className="h-4 w-[80px]" />
-						</div>
-					) : latestStats ? (
-						<div className="space-y-2">
-							<div className="flex items-center justify-between">
-								<span className="text-sm text-muted-foreground">Current Tick</span>
-								<span className="text-2xl font-bold">{latestStats.currentTick?.toLocaleString()}</span>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-sm text-muted-foreground">Epoch</span>
-								<span className="text-2xl font-bold">{latestStats.currentEpoch}</span>
-							</div>
-						</div>
-					) : (
-						<div className="text-sm text-muted-foreground">No stats available</div>
-					)}
-				</CardContent>
-			</Card>
-		</div>
+						)}
+						<div className="text-muted-foreground text-sm">Active Polls</div>
+					</div>
+					<div className="text-center">
+						{isLoading ? (
+							<Skeleton className="mx-auto mb-1 h-7 w-16" />
+						) : (
+							<div className="text-2xl font-bold">{overviewData.totalPolls}</div>
+						)}
+						<div className="text-muted-foreground text-sm">Total Polls</div>
+					</div>
+					<div className="text-center">
+						{statsLoading || isLoading ? (
+							<Skeleton className="mx-auto mb-1 h-7 w-16" />
+						) : (
+							<div className="text-2xl font-bold">{latestStats?.epoch ?? 'N/A'}</div>
+						)}
+						<div className="text-muted-foreground text-sm">Epoch</div>
+					</div>
+				</div>
+			</CardContent>
+		</Card>
 	)
 }
