@@ -155,13 +155,14 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 				}
 			}
 
-			// Check if user has sufficient asset balance
-			if (!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, amount)) {
-				return {
-					type: 'error' as const,
-					message: `Cannot vote: You don't have sufficient balance of any allowed assets (need ${amount.toLocaleString()} assets)`
-				}
-			}
+			// DISABLED: Asset balance check because smart contract returns NULL_ID for issuers
+			// Users can vote as long as they have enough QUBIC for the fee
+			// if (!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, amount)) {
+			// 	return {
+			// 		type: 'error' as const,
+			// 		message: `Cannot vote: You don't have sufficient balance of any allowed assets (need ${amount.toLocaleString()} assets)`
+			// 	}
+			// }
 		}
 
 		return {
@@ -209,16 +210,17 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 	const getAssetBalanceDisplay = (): React.ReactNode => {
 		if (!selectedAccount || poll.poll_type !== POLL_TYPE.ASSET) return null
 
-		const userHasAnyAllowedAsset = hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)
+		// DISABLED: Asset validation because smart contract returns NULL_ID for issuers
+		// const userHasAnyAllowedAsset = hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)
 
-		if (!userHasAnyAllowedAsset) {
-			return (
-				<div className="text-sm text-red-600 dark:text-red-400">
-					⚠️ You don't have any of the assets required for this poll. This poll only
-					allows specific assets.
-				</div>
-			)
-		}
+		// if (!userHasAnyAllowedAsset) {
+		// 	return (
+		// 		<div className="text-sm text-red-600 dark:text-red-400">
+		// 			⚠️ You don't have any of the assets required for this poll. This poll only
+		// 			allows specific assets.
+		// 		</div>
+		// 	)
+		// }
 
 		return (
 			<>
