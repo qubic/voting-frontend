@@ -313,8 +313,8 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 
 	return (
 		<>
-			{/* Asset balance information for asset polls */}
-			{poll.poll_type === POLL_TYPE.ASSET && selectedAccount && (
+			{/* Asset balance information for asset polls - only show if there are valid assets */}
+			{poll.poll_type === POLL_TYPE.ASSET && selectedAccount && pollAllowedAssets.length > 0 && (
 				<div className="bg-muted mb-4 rounded-lg p-4">
 					<h4 className="mb-2 font-medium">Your Asset Balances</h4>
 					{getAssetBalanceDisplay()}
