@@ -53,6 +53,7 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 
 	// Debug: Log poll data when component mounts
 	console.log('🔍 VoteForm mounted with poll:', poll)
+	console.log('🔍 Poll ID:', poll.id)
 	console.log('🔍 Poll type check:', poll.poll_type === POLL_TYPE.ASSET ? 'ASSET' : 'QUBIC')
 	console.log('🔍 Poll allowed_assets length:', poll.allowed_assets?.length || 0)
 	console.log('🔍 Poll num_assets:', poll.num_assets)
@@ -108,34 +109,12 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 				}
 			}
 
-			// TEMPORARILY DISABLED: Asset validation for testing
-			// TODO: Debug asset matching logic
-			console.log('🔍 DEBUG: Asset validation disabled for testing')
+			// DISABLED: Asset validation because smart contract returns NULL_ID for issuers
+			// The poll was created with invalid issuer addresses, so we can't validate asset ownership
+			// Users can still vote, but asset validation is bypassed
+			console.log('⚠️ Asset validation disabled: Smart contract returns NULL_ID for issuers')
 			console.log('Poll allowed assets:', pollAllowedAssets)
 			console.log('User assets:', selectedAccount.assets)
-			console.log('Raw poll data:', poll)
-			console.log('Poll allowed_assets field:', poll.allowed_assets)
-			console.log('Poll num_assets field:', poll.num_assets)
-			console.log('Poll poll_type field:', poll.poll_type)
-			console.log('Poll poll_name field:', poll.poll_name)
-			
-			// First check if user has any of the allowed assets at all
-			// if (!hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)) {
-			// 	return {
-			// 		isValid: false,
-			// 		errorMessage: `You don't have any of the assets required for this poll. This poll only allows specific assets.`
-			// 	}
-			// }
-
-			// Then check if any of the allowed assets have sufficient balance for the vote amount
-			// if (
-			// 	!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, data.amount)
-			// ) {
-			// 	return {
-			// 		isValid: false,
-			// 		errorMessage: `Insufficient asset balance. You need at least ${data.amount.toLocaleString()} of an allowed asset to vote.`
-			// 	}
-			// }
 		}
 
 		return { isValid: true, errorMessage: '' }
@@ -209,19 +188,16 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 		if (poll.poll_type === POLL_TYPE.ASSET) {
 			const hasEnoughQubicForFee = QUTIL_CONFIG.VOTE_FEE <= selectedAccount.amount
 			
-			// TEMPORARILY DISABLED: Asset balance check for testing
-			// const hasEnoughAssets = hasSufficientAssetBalance(
-			// 	pollAllowedAssets,
-			// 	selectedAccount.assets,
-			// 	amount
-			// )
-			const hasEnoughAssets = true // Always allow for testing
+			// DISABLED: Asset balance check because smart contract returns NULL_ID for issuers
+			// Users can vote as long as they have enough QUBIC for the fee
+			const hasEnoughAssets = true // Always allow since we can't validate assets
 			
 			console.log('🔍 canSubmitVote debug:', {
 				hasEnoughQubicForFee,
 				hasEnoughAssets,
 				amount,
-				minAmount: poll.min_amount
+				minAmount: poll.min_amount,
+				reason: 'Asset validation disabled due to NULL_ID issuers'
 			})
 
 			return hasEnoughQubicForFee && hasEnoughAssets
@@ -466,16 +442,10 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 												⚠️ Insufficient QUBIC balance for voting fee
 											</p>
 										)}
-										{/* TEMPORARILY DISABLED: Asset balance warning for testing */}
-										{/* {!hasSufficientAssetBalance(
-											pollAllowedAssets,
-											selectedAccount.assets,
-											form.watch('amount') || 0
-										) && (
-												<p className="mt-1 text-sm text-red-600 dark:text-red-400">
-													⚠️ Insufficient asset balance
-												</p>
-											)} */}
+										{/* Asset validation disabled due to smart contract returning NULL_ID for issuers */}
+										<p className="mt-1 text-sm text-yellow-600 dark:text-yellow-400">
+											⚠️ Asset validation disabled: Poll was created with invalid issuer addresses
+										</p>
 									</>
 								)}
 							</>
