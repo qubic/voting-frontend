@@ -19,9 +19,26 @@ export interface UserAsset {
  * Check if a poll asset matches a user asset
  */
 export const isAssetMatch = (pollAsset: PollAsset, userAsset: UserAsset): boolean => {
-	return (
-		pollAsset.issuer === userAsset.issuerIdentity && pollAsset.assetName === userAsset.assetName
-	)
+	const issuerMatch = pollAsset.issuer === userAsset.issuerIdentity
+	const nameMatch = pollAsset.assetName === userAsset.assetName
+	
+	// Debug logging
+	console.log('🔍 Asset matching debug:', {
+		pollAsset: {
+			issuer: pollAsset.issuer,
+			assetName: pollAsset.assetName
+		},
+		userAsset: {
+			issuerIdentity: userAsset.issuerIdentity,
+			assetName: userAsset.assetName,
+			ownedAmount: userAsset.ownedAmount
+		},
+		issuerMatch,
+		nameMatch,
+		fullMatch: issuerMatch && nameMatch
+	})
+	
+	return issuerMatch && nameMatch
 }
 
 /**
