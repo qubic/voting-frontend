@@ -26,6 +26,29 @@ export default function PollResults({ poll }: PollResultsProps) {
 		}
 	}).filter((result, index) => result.votes > 0 || index < 2)
 
+	// Check if this is a binary poll (only options 0 and 1, no other options have votes)
+	const isBinaryPoll = (): boolean => {
+		// Must have exactly 2 options shown
+		if (pollResults.length !== 2) return false
+		
+		// Must be options 0 and 1
+		const hasOnlyBinaryOptions = pollResults.every(result => result.option === 0 || result.option === 1)
+		if (!hasOnlyBinaryOptions) return false
+		
+		// Check if any other options (2+) have votes
+		const hasOtherVotes = poll.results?.result?.some((votes, index) => index >= 2 && votes > 0) || false
+		
+		return !hasOtherVotes
+	}
+
+	// Get the display label for an option
+	const getOptionLabel = (option: number): string => {
+		if (isBinaryPoll() && option < 2) {
+			return `Option ${option} - ${option === 0 ? 'No' : 'Yes'}`
+		}
+		return `Option ${option}`
+	}
+
 	return (
 		<div className="space-y-4">
 			{/* Poll statistics */}
@@ -49,7 +72,7 @@ export default function PollResults({ poll }: PollResultsProps) {
 					return (
 						<div key={result.option} className="space-y-2">
 							<div className="flex items-center justify-between text-sm">
-								<span className="font-medium">Option {result.option}</span>
+								<span className="font-medium">{getOptionLabel(result.option)}</span>
 								<div className="text-muted-foreground flex items-center gap-4">
 									<span>
 										{result.votes.toLocaleString()} votes ({result.voterCount}{' '}

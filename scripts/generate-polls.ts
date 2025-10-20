@@ -4,13 +4,19 @@ const QUBIC_RPC_URL = import.meta.env.VITE_QUBIC_RPC_URL || 'https://rpc.qubic.o
 
 // Smart contract configuration (from your constants)
 const QUTIL_CONFIG = {
-  CONTRACT_INDEX: 16 // From your constants
+  CONTRACT_INDEX: 4 // Correct contract index
 }
 
 const QUTIL_FUNCTIONS = {
   GET_CURRENT_POLL_ID: 5,
   GET_POLL_INFO: 6,
   GET_CURRENT_RESULT: 3
+}
+
+// Helper function to convert hex to base64
+function hexToBase64(hex: string): string {
+  const bytes = Buffer.from(hex, 'hex')
+  return bytes.toString('base64')
 }
 
 // Make smart contract call
@@ -32,7 +38,14 @@ async function querySmartContract(inputType: number, inputSize: number, requestD
     throw new Error(`Smart contract query failed: ${response.status}`)
   }
 
-  return await response.json()
+  const result = await response.json()
+  
+  // Convert hex responseData to base64 for proper decoding
+  if (result.responseData) {
+    result.responseData = hexToBase64(result.responseData)
+  }
+  
+  return result
 }
 
 // Get current poll ID and active polls
