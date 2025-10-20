@@ -1,6 +1,6 @@
 'use client'
 
-import { Zap } from 'lucide-react'
+import { ExternalLink, Terminal, Zap } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -328,6 +328,30 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 
 	return (
 		<>
+			{/* CLI Banner for users who prefer CLI over wallet integration */}
+			<div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 mb-4 rounded-lg p-4">
+				<div className="flex items-start gap-3">
+					<Terminal className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+					<div className="flex-1">
+						<h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+							Prefer CLI over wallet integration?
+						</h4>
+						<p className="text-sm text-blue-700 dark:text-blue-300 mb-2">
+							You can vote using the Qubic CLI tool instead of connecting a wallet.
+						</p>
+						<a
+							href="https://github.com/icyblob/qubic-cli/tree/gvote"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 font-medium"
+						>
+							View CLI voting guide
+							<ExternalLink className="h-3 w-3" />
+						</a>
+					</div>
+				</div>
+			</div>
+
 			{/* Asset balance information for asset polls - only show if there are valid assets */}
 			{poll.poll_type === POLL_TYPE.ASSET && selectedAccount && pollAllowedAssets.length > 0 && (
 				<div className="bg-muted mb-4 rounded-lg p-4">
@@ -377,11 +401,13 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 						name="amount"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Amount</FormLabel>
+								<FormLabel>
+									{isQubicPollType ? 'Amount = # of your QUBIC-shares' : 'Amount = # of your SC-shares'}
+								</FormLabel>
 								<FormControl>
 									<Input
 										type="number"
-										placeholder="Enter amount"
+										placeholder={`Enter number of your ${isQubicPollType ? 'QUBIC' : 'SC'}-shares in wallet`}
 										value={field.value || ''}
 										onChange={(e) => field.onChange(Number(e.target.value))}
 										min={poll.min_amount}
@@ -389,7 +415,7 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 									/>
 								</FormControl>
 								<FormDescription>
-									Amount to vote with
+									Number of {isQubicPollType ? 'QUBIC' : 'SC'}-shares to vote with (not transaction amount)
 									{selectedAccount && (
 										<>
 											<br />
