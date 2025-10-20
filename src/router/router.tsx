@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 
 import { AppLayout } from '@/components/layouts'
-import { CreatePollPageLazy, HomePage, NotFoundPage } from '@/pages'
+import { CLIVotingPage, CreatePollPageLazy, HomePage, NotFoundPage } from '@/pages'
 
 import { PublicRoutes } from './routes'
 
@@ -16,6 +16,10 @@ const router: ReturnType<typeof createBrowserRouter> = createBrowserRouter([
 			{
 				path: PublicRoutes.CREATE_POLL,
 				element: <CreatePollPageLazy />
+			},
+			{
+				path: PublicRoutes.CLI_VOTING,
+				element: <CLIVotingPage />
 			},
 			{
 				path: PublicRoutes.NOT_FOUND,

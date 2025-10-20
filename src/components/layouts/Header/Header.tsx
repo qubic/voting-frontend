@@ -1,6 +1,8 @@
+import { Terminal } from 'lucide-react'
 import { Link } from 'react-router'
 
 import { QvotingDarkLogo } from '@/assets/icons'
+import { Button } from '@/components/buttons'
 import { PublicRoutes } from '@/router/routes'
 
 import ConnectWalletMenu from './ConnectWalletMenu/ConnectWalletMenu'
@@ -13,7 +15,15 @@ export default function Header() {
 					<QvotingDarkLogo />
 				</Link>
 
-				<ConnectWalletMenu />
+				<div className="flex items-center gap-3">
+					<Link to={PublicRoutes.CLI_VOTING}>
+						<Button variant="outlined" size="sm" className="hidden sm:flex items-center gap-2">
+							<Terminal className="h-4 w-4" />
+							<span>CLI Voting</span>
+						</Button>
+					</Link>
+					<ConnectWalletMenu />
+				</div>
 			</div>
 		</header>
 	)
