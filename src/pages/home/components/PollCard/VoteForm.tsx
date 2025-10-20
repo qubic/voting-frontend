@@ -377,11 +377,13 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 						name="amount"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Amount</FormLabel>
+								<FormLabel>
+									{isQubicPollType ? 'Amount = # of your QUBIC-shares' : 'Amount = # of your SC-shares'}
+								</FormLabel>
 								<FormControl>
 									<Input
 										type="number"
-										placeholder="Enter amount"
+										placeholder={`Enter number of your ${isQubicPollType ? 'QUBIC' : 'SC'}-shares in wallet`}
 										value={field.value || ''}
 										onChange={(e) => field.onChange(Number(e.target.value))}
 										min={poll.min_amount}
@@ -389,7 +391,7 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 									/>
 								</FormControl>
 								<FormDescription>
-									Amount to vote with
+									Number of {isQubicPollType ? 'QUBIC' : 'SC'}-shares to vote with (not transaction amount)
 									{selectedAccount && (
 										<>
 											<br />
