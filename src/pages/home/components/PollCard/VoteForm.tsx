@@ -11,31 +11,29 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
 } from '@/components/ui/select'
 import { TOASTS_DURATIONS } from '@/constants/toasts-durations'
 import { useQUtilContract, useWalletConnect } from '@/hooks'
 import { getToastErrorMessage } from '@/lib/errors'
 import { POLL_TYPE, QUTIL_CONFIG, type VoteFormData, VoteSchema } from '@/lib/qubic'
 import {
-	filterValidAssets,
-	findMatchingUserAsset,
-	hasAnyAllowedAsset,
-	hasSufficientAssetBalance
+    filterValidAssets,
+    findMatchingUserAsset
 } from '@/lib/qubic/asset-utils'
 import { cn } from '@/lib/utils'
 import type { PollWithResults } from '@/types'
@@ -51,6 +49,8 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 	const { selectedAccount } = useWalletConnect()
 	const { castVote } = useQUtilContract()
 
+	// TODO: Remove debug logs when SC issuer issue is fixed
+
 	const form = useForm<VoteFormData>({
 		resolver: zodResolver(VoteSchema),
 		defaultValues: {
@@ -63,6 +63,21 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 
 	const isQubicPollType = poll.poll_type === POLL_TYPE.QUBIC
 	const pollAllowedAssets = filterValidAssets(poll.allowed_assets)
+
+	// Check if this is a binary poll (only options 0 and 1, no other options have votes)
+	const isBinaryPoll = (): boolean => {
+		// Check if any other options (2+) have votes
+		const hasOtherVotes = poll.results?.result?.some((votes, index) => index >= 2 && votes > 0) || false
+		return !hasOtherVotes
+	}
+
+	// Get the display label for an option
+	const getOptionLabel = (option: number): string => {
+		if (isBinaryPoll() && option < 2) {
+			return `Option ${option} - ${option === 0 ? 'No' : 'Yes'}`
+		}
+		return `Option ${option}`
+	}
 
 	// Validation function to check balance requirements
 	const validateVoteRequirements = (
@@ -102,24 +117,15 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 				}
 			}
 
-			// TEMPORARILY DISABLED: Asset validation for testing
-			// TODO: Debug asset matching logic
-			console.log('🔍 DEBUG: Asset validation disabled for testing')
-			console.log('Poll allowed assets:', pollAllowedAssets)
-			console.log('User assets:', selectedAccount.assets)
-			
-			// First check if user has any of the allowed assets at all
+			// TEMPORARILY DISABLED: Asset validation due to SC returning NULL_ID for issuers
+			// TODO: Re-enable when SC issuer issue is fixed
 			// if (!hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)) {
 			// 	return {
 			// 		isValid: false,
 			// 		errorMessage: `You don't have any of the assets required for this poll. This poll only allows specific assets.`
 			// 	}
 			// }
-
-			// Then check if any of the allowed assets have sufficient balance for the vote amount
-			// if (
-			// 	!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, data.amount)
-			// ) {
+			// if (!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, data.amount)) {
 			// 	return {
 			// 		isValid: false,
 			// 		errorMessage: `Insufficient asset balance. You need at least ${data.amount.toLocaleString()} of an allowed asset to vote.`
@@ -165,13 +171,14 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 				}
 			}
 
-			// Check if user has sufficient asset balance
-			if (!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, amount)) {
-				return {
-					type: 'error' as const,
-					message: `Cannot vote: You don't have sufficient balance of any allowed assets (need ${amount.toLocaleString()} assets)`
-				}
-			}
+			// TEMPORARILY DISABLED: Asset balance check due to SC returning NULL_ID for issuers
+			// TODO: Re-enable when SC issuer issue is fixed
+			// if (!hasSufficientAssetBalance(pollAllowedAssets, selectedAccount.assets, amount)) {
+			// 	return {
+			// 		type: 'error' as const,
+			// 		message: `Cannot vote: You don't have sufficient balance of any allowed assets (need ${amount.toLocaleString()} assets)`
+			// 	}
+			// }
 		}
 
 		return {
@@ -197,11 +204,16 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 		// For asset polls, check QUBIC balance for fee and asset balance for amount
 		if (poll.poll_type === POLL_TYPE.ASSET) {
 			const hasEnoughQubicForFee = QUTIL_CONFIG.VOTE_FEE <= selectedAccount.amount
-			const hasEnoughAssets = hasSufficientAssetBalance(
-				pollAllowedAssets,
-				selectedAccount.assets,
-				amount
-			)
+			
+			// TEMPORARILY DISABLED: Asset balance check due to SC returning NULL_ID for issuers
+			// TODO: Re-enable when SC issuer issue is fixed
+			// const hasEnoughAssets = hasSufficientAssetBalance(
+			// 	pollAllowedAssets,
+			// 	selectedAccount.assets,
+			// 	amount
+			// )
+			const hasEnoughAssets = true // Always allow since we can't validate assets
+			
 			return hasEnoughQubicForFee && hasEnoughAssets
 		}
 
@@ -211,16 +223,17 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 	const getAssetBalanceDisplay = (): React.ReactNode => {
 		if (!selectedAccount || poll.poll_type !== POLL_TYPE.ASSET) return null
 
-		const userHasAnyAllowedAsset = hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)
-
-		if (!userHasAnyAllowedAsset) {
-			return (
-				<div className="text-sm text-red-600 dark:text-red-400">
-					⚠️ You don't have any of the assets required for this poll. This poll only
-					allows specific assets.
-				</div>
-			)
-		}
+		// TEMPORARILY DISABLED: Asset validation due to SC returning NULL_ID for issuers
+		// TODO: Re-enable when SC issuer issue is fixed
+		// const userHasAnyAllowedAsset = hasAnyAllowedAsset(pollAllowedAssets, selectedAccount.assets)
+		// if (!userHasAnyAllowedAsset) {
+		// 	return (
+		// 		<div className="text-sm text-red-600 dark:text-red-400">
+		// 			⚠️ You don't have any of the assets required for this poll. This poll only
+		// 			allows specific assets.
+		// 		</div>
+		// 	)
+		// }
 
 		return (
 			<>
@@ -315,8 +328,8 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 
 	return (
 		<>
-			{/* Asset balance information for asset polls */}
-			{poll.poll_type === POLL_TYPE.ASSET && selectedAccount && (
+			{/* Asset balance information for asset polls - only show if there are valid assets */}
+			{poll.poll_type === POLL_TYPE.ASSET && selectedAccount && pollAllowedAssets.length > 0 && (
 				<div className="bg-muted mb-4 rounded-lg p-4">
 					<h4 className="mb-2 font-medium">Your Asset Balances</h4>
 					{getAssetBalanceDisplay()}
@@ -330,7 +343,7 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 						name="chosen_option"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Option (0-63)</FormLabel>
+								<FormLabel>{isBinaryPoll() ? 'Vote' : 'Option (0-63)'}</FormLabel>
 								<Select
 									value={field.value.toString()}
 									onValueChange={(value) => field.onChange(Number(value))}
@@ -347,7 +360,7 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 											},
 											(_, i) => (
 												<SelectItem key={i} value={i.toString()}>
-													Option {i}
+													{getOptionLabel(i)}
 												</SelectItem>
 											)
 										)}
@@ -364,11 +377,13 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 						name="amount"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Amount</FormLabel>
+								<FormLabel>
+									{isQubicPollType ? 'Amount = # of your QUBIC-shares' : 'Amount = # of your SC-shares'}
+								</FormLabel>
 								<FormControl>
 									<Input
 										type="number"
-										placeholder="Enter amount"
+										placeholder={`Enter number of your ${isQubicPollType ? 'QUBIC' : 'SC'}-shares in wallet`}
 										value={field.value || ''}
 										onChange={(e) => field.onChange(Number(e.target.value))}
 										min={poll.min_amount}
@@ -376,7 +391,7 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 									/>
 								</FormControl>
 								<FormDescription>
-									Amount to vote with
+									Number of {isQubicPollType ? 'QUBIC' : 'SC'}-shares to vote with (not transaction amount)
 									{selectedAccount && (
 										<>
 											<br />
@@ -444,15 +459,10 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 												⚠️ Insufficient QUBIC balance for voting fee
 											</p>
 										)}
-										{!hasSufficientAssetBalance(
-											pollAllowedAssets,
-											selectedAccount.assets,
-											form.watch('amount') || 0
-										) && (
-												<p className="mt-1 text-sm text-red-600 dark:text-red-400">
-													⚠️ Insufficient asset balance
-												</p>
-											)}
+										{/* Asset validation disabled due to smart contract returning NULL_ID for issuers */}
+										<p className="mt-1 text-sm text-yellow-600 dark:text-yellow-400">
+											⚠️ Asset validation disabled: Poll was created with invalid issuer addresses
+										</p>
 									</>
 								)}
 							</>
