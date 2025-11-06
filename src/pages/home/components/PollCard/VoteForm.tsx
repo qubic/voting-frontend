@@ -1,7 +1,7 @@
 'use client'
 
 import { Zap } from 'lucide-react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -35,6 +35,7 @@ import {
 	filterValidAssets,
 	findMatchingUserAsset
 } from '@/lib/qubic/asset-utils'
+import { getPollOptionLabel, getPollAvailableOptions } from '@/lib/qubic/poll-options-config'
 import { cn } from '@/lib/utils'
 import type { PollWithResults } from '@/types'
 
@@ -48,6 +49,27 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 
 	const { selectedAccount } = useWalletConnect()
 	const { castVote } = useQUtilContract()
+
+	const [customOptionLabels, setCustomOptionLabels] = useState<Record<number, string> | null>(null)
+	const [availableOptions, setAvailableOptions] = useState<number[] | null>(null)
+
+	useEffect(() => {
+		async function loadConfig() {
+			const options = await getPollAvailableOptions(poll.id)
+			if (options) {
+				setAvailableOptions(options)
+				const labelsMap: Record<number, string> = {}
+				for (const option of options) {
+					const label = await getPollOptionLabel(poll.id, option)
+					if (label) {
+						labelsMap[option] = label
+					}
+				}
+				setCustomOptionLabels(labelsMap)
+			}
+		}
+		loadConfig()
+	}, [poll.id])
 
 	// TODO: Remove debug logs when SC issuer issue is fixed
 
@@ -66,6 +88,9 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 
 	// Check if this is a binary poll (only options 0 and 1, no other options have votes)
 	const isBinaryPoll = (): boolean => {
+		// If poll has custom config, it's not a binary poll
+		if (availableOptions) return false
+		
 		// Check if any other options (2+) have votes
 		const hasOtherVotes = poll.results?.result?.some((votes, index) => index >= 2 && votes > 0) || false
 		return !hasOtherVotes
@@ -73,6 +98,11 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 
 	// Get the display label for an option
 	const getOptionLabel = (option: number): string => {
+		// Check for custom label first
+		if (customOptionLabels && customOptionLabels[option]) {
+			return customOptionLabels[option]
+		}
+		
 		if (isBinaryPoll() && option < 2) {
 			return `Option ${option} - ${option === 0 ? 'No' : 'Yes'}`
 		}
@@ -354,16 +384,22 @@ export default function VoteForm({ poll, onCancel }: VoteFormProps) {
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
-										{Array.from(
-											{
-												length: QUTIL_CONFIG.MAX_OPTIONS
-											},
-											(_, i) => (
-												<SelectItem key={i} value={i.toString()}>
-													{getOptionLabel(i)}
-												</SelectItem>
-											)
-										)}
+										{availableOptions
+											? availableOptions.map((option) => (
+													<SelectItem key={option} value={option.toString()}>
+														{getOptionLabel(option)}
+													</SelectItem>
+												))
+											: Array.from(
+													{
+														length: QUTIL_CONFIG.MAX_OPTIONS
+													},
+													(_, i) => (
+														<SelectItem key={i} value={i.toString()}>
+															{getOptionLabel(i)}
+														</SelectItem>
+													)
+												)}
 									</SelectContent>
 								</Select>
 								<FormDescription>Choose your voting option</FormDescription>
