@@ -68,7 +68,7 @@ The application is built with a modern, scalable architecture:
     ```bash
     # Qubic Network Configuration
     VITE_QUBIC_RPC_URL=https://rpc.qubic.org
-    VITE_QUBIC_CHAIN_ID=qubic:main
+    VITE_QUBIC_CHAIN_ID=qubic:mainnet
 
     # WalletConnect Configuration
     VITE_WALLET_CONNECT_PROJECT_ID=your_project_id
