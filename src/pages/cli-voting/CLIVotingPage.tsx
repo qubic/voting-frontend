@@ -167,7 +167,7 @@ export default function CLIVotingPage() {
 									<CardDescription>{cmd.description}</CardDescription>
 								</div>
 								<Button
-									variant="outline"
+									variant="outlined"
 									size="sm"
 									onClick={() => copyToClipboard(cmd.command, cmd.name)}
 									className="flex items-center gap-2"
