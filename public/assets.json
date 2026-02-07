@@ -1,58 +1,448 @@
 [
   {
+    "issuerIdentity": "ENTUBOJZTOCGVAKTSWSJIJWREQPCZBZTHDNXAYZBSEJGQREPPXZISWWGYTEG",
+    "name": "GRONK",
+    "universeIndex": 10756658
+  },
+  {
+    "issuerIdentity": "ARKMGCWFYEHJFAVSGKEXVWBGGXZAVLZNBDNBZEXTQBKLKRPEYPEIEKFHUPNG",
+    "name": "ARK",
+    "universeIndex": 3664802
+  },
+  {
+    "issuerIdentity": "LUCRKUDTXONGDELVTZJUMKQUXVVCXVRKMIVTEGLFGGZGHVCHYGKZVGFGUEJA",
+    "name": "AGI",
+    "universeIndex": 1563363
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "NOST",
+    "universeIndex": 0
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "GQMPROP",
+    "universeIndex": 5
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "SWATCH",
+    "universeIndex": 8
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "CCF",
+    "universeIndex": 21
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "RL",
+    "universeIndex": 26
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "RANDOM",
+    "universeIndex": 29
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QX",
+    "universeIndex": 32
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "MLM",
+    "universeIndex": 35
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QVAULT",
+    "universeIndex": 38
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "MSVAULT",
+    "universeIndex": 41
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QBAY",
+    "universeIndex": 44
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QSWAP",
+    "universeIndex": 47
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QBOND",
+    "universeIndex": 52
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QIP",
+    "universeIndex": 55
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND01",
+    "universeIndex": 68
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND02",
+    "universeIndex": 71
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND03",
+    "universeIndex": 74
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND04",
+    "universeIndex": 77
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND05",
+    "universeIndex": 80
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND06",
+    "universeIndex": 83
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND07",
+    "universeIndex": 86
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND08",
+    "universeIndex": 89
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND09",
+    "universeIndex": 92
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND10",
+    "universeIndex": 95
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND11",
+    "universeIndex": 98
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND12",
+    "universeIndex": 101
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND13",
+    "universeIndex": 104
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND14",
+    "universeIndex": 107
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND15",
+    "universeIndex": 110
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND16",
+    "universeIndex": 113
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND17",
+    "universeIndex": 116
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND18",
+    "universeIndex": 119
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND19",
+    "universeIndex": 122
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND20",
+    "universeIndex": 125
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND21",
+    "universeIndex": 128
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND22",
+    "universeIndex": 131
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND23",
+    "universeIndex": 134
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND24",
+    "universeIndex": 137
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND25",
+    "universeIndex": 140
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND26",
+    "universeIndex": 143
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND27",
+    "universeIndex": 146
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND28",
+    "universeIndex": 149
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND29",
+    "universeIndex": 152
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND30",
+    "universeIndex": 155
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND31",
+    "universeIndex": 158
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND32",
+    "universeIndex": 161
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND33",
+    "universeIndex": 164
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND34",
+    "universeIndex": 167
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND35",
+    "universeIndex": 170
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND36",
+    "universeIndex": 173
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND37",
+    "universeIndex": 176
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND38",
+    "universeIndex": 179
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND39",
+    "universeIndex": 182
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND40",
+    "universeIndex": 185
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND41",
+    "universeIndex": 188
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND42",
+    "universeIndex": 191
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND43",
+    "universeIndex": 194
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND44",
+    "universeIndex": 197
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND45",
+    "universeIndex": 200
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND46",
+    "universeIndex": 203
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND47",
+    "universeIndex": 206
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND48",
+    "universeIndex": 209
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND49",
+    "universeIndex": 212
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND50",
+    "universeIndex": 215
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND51",
+    "universeIndex": 218
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND52",
+    "universeIndex": 221
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND53",
+    "universeIndex": 224
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QRAFFLE",
+    "universeIndex": 227
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND184",
+    "universeIndex": 302
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QTRY",
+    "universeIndex": 303
+  },
+  {
     "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
     "name": "MBND182",
-    "universeIndex": 20
+    "universeIndex": 304
   },
   {
-    "issuerIdentity": "QMINEQQXYBEGBHNSUPOUYDIQKZPCBPQIIHUUZMCPLBPCCAIARVZBTYKGFCWM",
-    "name": "QMINE",
-    "universeIndex": 14778544
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QRWA",
+    "universeIndex": 305
   },
   {
-    "issuerIdentity": "GARTHFANXMPXMDPEZFQPWFPYMHOAWTKILINCTRMVLFFVATKVJRKEDYXGHJBF",
-    "name": "GARTH",
-    "universeIndex": 13673074
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QEARN",
+    "universeIndex": 306
   },
   {
-    "issuerIdentity": "CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL",
-    "name": "CFB",
-    "universeIndex": 12267528
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND186",
+    "universeIndex": 307
   },
   {
-    "issuerIdentity": "QWALLETSGQVAGBHUCVVXWZXMBKQBPQQSHRYKZGEJWFVNUFCEDDPRMKTAUVHA",
-    "name": "QWALLET",
-    "universeIndex": 9284980
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND190",
+    "universeIndex": 308
   },
   {
-    "issuerIdentity": "CODEDBUUDDYHECBVSUONSSWTOJRCLZSWHFHZIUWVFGNWVCKIWJCSDSWGQAAI",
-    "name": "CODED",
-    "universeIndex": 6015690
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QDRAW",
+    "universeIndex": 309
   },
   {
-    "issuerIdentity": "TFUYVBXYIYBVTEMJHAJGEJOOZHJBQFVQLTBBKMEHPEVIZFXZRPEYFUWGTIWG",
-    "name": "QFT",
-    "universeIndex": 2741973
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QUTIL",
+    "universeIndex": 310
   },
   {
-    "issuerIdentity": "VALISTURNWYFQAMVLAKJVOKJQKKBXZZFEASEYCAGNCFMZARJEMMFSESEFOWM",
-    "name": "VSTB001",
-    "universeIndex": 2419425
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND185",
+    "universeIndex": 311
   },
   {
-    "issuerIdentity": "QCAPWMYRSHLBJHSTTZQVCIBARVOASKDENASAKNOBRGPFWWKRCUVUAXYEZVOG",
-    "name": "QCAP",
-    "universeIndex": 2037116
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND183",
+    "universeIndex": 312
   },
   {
-    "issuerIdentity": "QXMRTKAIIGLUREPIQPCMHCKWSIPDTUYFCFNYXQLTECSUJVYEMMDELBMDOEYB",
-    "name": "QXMR",
-    "universeIndex": 1775022
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND189",
+    "universeIndex": 313
   },
   {
-    "issuerIdentity": "ZWQHZOEAWYKSGDPWWAQBAOKECCSASFCMLYZOJGBXNABXVZJZXKXOWRTFIQHC",
-    "name": "MATILDA",
-    "universeIndex": 719229
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND191",
+    "universeIndex": 314
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QRP",
+    "universeIndex": 315
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QTF",
+    "universeIndex": 316
+  },
+  {
+    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
+    "name": "QDUEL",
+    "universeIndex": 317
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND187",
+    "universeIndex": 318
+  },
+  {
+    "issuerIdentity": "RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADKAH",
+    "name": "MBND188",
+    "universeIndex": 319
   },
   {
     "issuerIdentity": "QXTRMABNAJWNQBKYYNUNVYAJAQMDLIKOFXNGTRVYRDQMNZNNMZDGBDNGYMRM",
@@ -60,73 +450,148 @@
     "universeIndex": 235834
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QDRAW",
-    "universeIndex": 19
+    "issuerIdentity": "OLDZGVBURUJVZBSTWEBJGEPZNRDBTZMCNDVRBZEXBDYEKCJEYZQTDGLARWUO",
+    "name": "CAVIX",
+    "universeIndex": 515392
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QBAY",
-    "universeIndex": 18
+    "issuerIdentity": "ZWQHZOEAWYKSGDPWWAQBAOKECCSASFCMLYZOJGBXNABXVZJZXKXOWRTFIQHC",
+    "name": "MATILDA",
+    "universeIndex": 719229
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "MSVAULT",
-    "universeIndex": 17
+    "issuerIdentity": "YCNPBGPGMJYCWGBJKQWLNRNKKJMBKQORLRKOSFUOWAWNXJHBLGTGFRRELGEK",
+    "name": "QTC",
+    "universeIndex": 1167880
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QUTIL",
-    "universeIndex": 16
+    "issuerIdentity": "QXMRTKAIIGLUREPIQPCMHCKWSIPDTUYFCFNYXQLTECSUJVYEMMDELBMDOEYB",
+    "name": "QXMR",
+    "universeIndex": 1775022
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QEARN",
-    "universeIndex": 15
+    "issuerIdentity": "QCAPWMYRSHLBJHSTTZQVCIBARVOASKDENASAKNOBRGPFWWKRCUVUAXYEZVOG",
+    "name": "QCAP",
+    "universeIndex": 2037116
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QTRY",
-    "universeIndex": 12
+    "issuerIdentity": "HASVHXZKVIHTFHEZUSZIIBPZFVHAGTANVXHBJNHMWCRQZYKULCUBLCTBPONO",
+    "name": "EXODUS",
+    "universeIndex": 2298471
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QX",
-    "universeIndex": 11
+    "issuerIdentity": "VALISTURNWYFQAMVLAKJVOKJQKKBXZZFEASEYCAGNCFMZARJEMMFSESEFOWM",
+    "name": "VSTB001",
+    "universeIndex": 2419425
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "RANDOM",
-    "universeIndex": 10
+    "issuerIdentity": "TFUYVBXYIYBVTEMJHAJGEJOOZHJBQFVQLTBBKMEHPEVIZFXZRPEYFUWGTIWG",
+    "name": "QFT",
+    "universeIndex": 2741973
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QVAULT",
-    "universeIndex": 9
+    "issuerIdentity": "VDQOPFTANWHKGDTCLRHMMUNTTSCAOJFHTWPDYZPAVFTZGCCDIWQBYRQGIXCD",
+    "name": "VIP",
+    "universeIndex": 3023267
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QBOND",
-    "universeIndex": 8
+    "issuerIdentity": "QMHJNLMQRIBIREFIWVKYQELBFARBTDNYKIOBOFFYFGJYZSXJBVGBSUQGHSAM",
+    "name": "QST",
+    "universeIndex": 3320668
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "RL",
-    "universeIndex": 7
+    "issuerIdentity": "PXJSXWCPWKQGGHXHROMBLUCHJHLBOAHOKUCMJTUQXERSOMTPKRPQYOYBHUHO",
+    "name": "QVERSAL",
+    "universeIndex": 3992105
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "QSWAP",
-    "universeIndex": 6
+    "issuerIdentity": "MLLJLIRDKFAGJHUPTXKULZAMYGSDKTVZJBQICVZPKAAMJZEDCBPGSUJFZGMN",
+    "name": "STATSY",
+    "universeIndex": 5123726
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "MLM",
-    "universeIndex": 5
+    "issuerIdentity": "IQUGNVFDQSLTXFJSIOPPNPZINSCDQTJVJWGRPWRTFFXMXSJIAASXOBFFBERK",
+    "name": "PORTAL",
+    "universeIndex": 5251864
   },
   {
-    "issuerIdentity": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB",
-    "name": "NOST",
-    "universeIndex": 0
+    "issuerIdentity": "CODEDBUUDDYHECBVSUONSSWTOJRCLZSWHFHZIUWVFGNWVCKIWJCSDSWGQAAI",
+    "name": "CODED",
+    "universeIndex": 6015690
+  },
+  {
+    "issuerIdentity": "HIFUSWQYNUZTSDRPXZOXXIWUPWTAOVJUTCVLFIHLHARCXSARRTGCJLGGAREO",
+    "name": "ANNA",
+    "universeIndex": 7323403
+  },
+  {
+    "issuerIdentity": "PHOENIXCLQOBHDZCHJOCKCPZVTKALQBMXYOEDBUHSDCJRMTUCUBPLSUFNBIE",
+    "name": "GARTH",
+    "universeIndex": 8209133
+  },
+  {
+    "issuerIdentity": "EQZIDZELUKGHICLIEXLBMBMXRNPCXGEAZCGGSQCOFBRJJUOKUWBXDEZBGNKJ",
+    "name": "QSILVER",
+    "universeIndex": 8217400
+  },
+  {
+    "issuerIdentity": "QWALLETSGQVAGBHUCVVXWZXMBKQBPQQSHRYKZGEJWFVNUFCEDDPRMKTAUVHA",
+    "name": "QWALLET",
+    "universeIndex": 9284980
+  },
+  {
+    "issuerIdentity": "QNVPSIWLWYQXZGSMPVJTTTUKGBFCZABVUEVNMNKRDCMEQRMUWVRCSCTFDBWK",
+    "name": "Q",
+    "universeIndex": 10990030
+  },
+  {
+    "issuerIdentity": "CFBMEMZOIDEXQAUXYYSZIURADQLAPWPMNJXQSNVQZAHYVOPYUKKJBJUCTVJL",
+    "name": "CFB",
+    "universeIndex": 12267528
+  },
+  {
+    "issuerIdentity": "GARTHFANXMPXMDPEZFQPWFPYMHOAWTKILINCTRMVLFFVATKVJRKEDYXGHJBF",
+    "name": "GARTH",
+    "universeIndex": 13673074
+  },
+  {
+    "issuerIdentity": "LPWZCSEFJHYWFDTGVIFONWDHUGQBOPELDDNFDXYPMBVHFJFVZPLDBAFAOIJA",
+    "name": "QSMILE",
+    "universeIndex": 13895665
+  },
+  {
+    "issuerIdentity": "QMINEQQXYBEGBHNSUPOUYDIQKZPCBPQIIHUUZMCPLBPCCAIARVZBTYKGFCWM",
+    "name": "QMINE",
+    "universeIndex": 14778544
+  },
+  {
+    "issuerIdentity": "ZROTZCHXDSSHFFEYDZPZNUXBUJLDHWHPBKNHEBADLARYDGHPOCTRAZYBCPPK",
+    "name": "QFRONT",
+    "universeIndex": 15023443
+  },
+  {
+    "issuerIdentity": "SSGXSLSXFEJOOBTZWVDSRCEFGXNDYUVDXMQALXLBXGDCRXTKFZIOTGZFUNXO",
+    "name": "QHEART",
+    "universeIndex": 15289046
+  },
+  {
+    "issuerIdentity": "POCCZYCKTRQGHFIPWGSBLJTEQFDDVVBMNUHNCKMRACBGQOPBLURNRCBAFOBD",
+    "name": "GENESIS",
+    "universeIndex": 15301667
+  },
+  {
+    "issuerIdentity": "QDOGEEESKYPAICECHEAHOXPULEOADTKGEJHAVYPFKHLEWGXXZQUGIGMBUTZE",
+    "name": "QDOGE",
+    "universeIndex": 15773702
+  },
+  {
+    "issuerIdentity": "QGRNNKNCTTKVBAACUANWEGRXGPGDOHXYZNMKGEUZSEXBNBBWUBJHAGDGWCSH",
+    "name": "QGOLD",
+    "universeIndex": 16245608
+  },
+  {
+    "issuerIdentity": "WZEQKJXIWECRGHSRJJDRGFREYMBCTKQGPWEYGLQMPGMKNRZNCZGPFGMCGANI",
+    "name": "SATOSHI",
+    "universeIndex": 16278704
   }
 ]
