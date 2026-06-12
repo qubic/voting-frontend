@@ -64,3 +64,10 @@ export interface TickInfo {
 export interface GetTickInfoResponse {
 	tickInfo: TickInfo
 }
+
+export interface GetStatusResponse {
+	lastProcessedTick: {
+		tickNumber: number
+		epoch: number
+	}
+}

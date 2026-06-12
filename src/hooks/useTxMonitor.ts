@@ -3,7 +3,11 @@ import { useDispatch } from 'react-redux'
 
 import { POLLING_INTERVALS } from '@/constants/polling-intervals'
 import { LogFeature, makeLog } from '@/lib/logger'
-import { useGetTickInfoQuery, useLazyGetTransactionQuery } from '@/store/apis/qubic-rpc'
+import {
+	useGetTickInfoQuery,
+	useLazyGetStatusQuery,
+	useLazyGetTransactionQuery
+} from '@/store/apis/qubic-rpc'
 import {
 	addPendingTransaction as addPendingTx,
 	initializeFromStorage,
@@ -90,6 +94,7 @@ export const useTxMonitor = () => {
 	const { data: tickInfo } = useGetTickInfoQuery(undefined, {
 		pollingInterval: pendingTransactions.length > 0 ? POLLING_INTERVALS.TX_MONITOR : 0
 	})
+	const [getStatusQuery] = useLazyGetStatusQuery()
 	const [getTransactionQuery] = useLazyGetTransactionQuery()
 
 	/* --------------------------
@@ -102,25 +107,33 @@ export const useTxMonitor = () => {
 				return { success: false, message: TX_MSG[tx.type].pending }
 			}
 			try {
-				const { data } = await getTransactionQuery(tx.txHash)
-				if (!data) {
-					return {
-						success: false,
-						message: `${TX_MSG[tx.type].failed}: Transaction not found on network at targeted tick ${tx.targetTick}`
+				const { data: status } = await getStatusQuery()
+				if (!status || status.lastProcessedTick.tickNumber <= tx.targetTick) {
+					return { success: false, message: TX_MSG[tx.type].pending }
+				}
+
+				const { data, error } = await getTransactionQuery(tx.txHash)
+				if (error) {
+					if ('status' in error && error.status === 404) {
+						return {
+							success: false,
+							message: `${TX_MSG[tx.type].failed}: Transaction not found on network at targeted tick ${tx.targetTick}`
+						}
 					}
+					return { success: false, message: TX_MSG[tx.type].pending }
+				}
+				if (!data) {
+					return { success: false, message: TX_MSG[tx.type].pending }
 				}
 				return {
 					success: !!data.moneyFlew,
 					message: data.moneyFlew ? TX_MSG[tx.type].success : TX_MSG[tx.type].failed
 				}
 			} catch {
-				return {
-					success: false,
-					message: `${TX_MSG[tx.type].failed}: Transaction check failed`
-				}
+				return { success: false, message: TX_MSG[tx.type].pending }
 			}
 		},
-		[tickInfo?.tick, getTransactionQuery]
+		[tickInfo?.tick, getStatusQuery, getTransactionQuery]
 	)
 
 	/* --------------------------
