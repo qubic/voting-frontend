@@ -6,6 +6,7 @@ import type {
 	BroadcastTransactionArgs,
 	BroadcastTransactionResponse,
 	GetLatestStatsResponse,
+	GetStatusResponse,
 	GetTickInfoResponse,
 	GetTransactionResponse,
 	QuerySmartContractArgs,
@@ -26,6 +27,9 @@ export const qubicRpcApi = createApi({
 		getTickInfo: build.query<GetTickInfoResponse['tickInfo'], void>({
 			query: () => '/v1/tick-info',
 			transformResponse: (response: GetTickInfoResponse) => response.tickInfo
+		}),
+		getStatus: build.query<GetStatusResponse, void>({
+			query: () => '/v1/status'
 		}),
 		broadcastTransaction: build.mutation<
 			BroadcastTransactionResponse,
@@ -56,6 +60,7 @@ export const {
 	useGetLatestStatsQuery,
 	useGetTickInfoQuery,
 	useLazyGetTickInfoQuery,
+	useLazyGetStatusQuery,
 	useBroadcastTransactionMutation,
 	useQuerySmartContractMutation,
 	// V2 Endpoints

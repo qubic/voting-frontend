@@ -18,11 +18,7 @@ import {
 } from '@/lib/qubic/schemas'
 import type { ContractResponse } from '@/lib/qubic/types'
 import { validateContractResponse } from '@/lib/qubic/validators'
-import {
-	type QuerySmartContractArgs,
-	useLazyGetTickInfoQuery,
-	useQuerySmartContractMutation
-} from '@/store/apis/qubic-rpc'
+import { type QuerySmartContractArgs, useQuerySmartContractMutation } from '@/store/apis/qubic-rpc'
 
 import { useTxMonitor } from './useTxMonitor'
 
@@ -50,22 +46,8 @@ export interface UseQUtilContractReturn {
 
 export const useQUtilContract = (): UseQUtilContractReturn => {
 	const { walletClient, selectedAccount } = useWalletConnect()
-	const [getTickInfo] = useLazyGetTickInfoQuery()
 	const [querySmartContractMutation] = useQuerySmartContractMutation()
 	const { addPendingTransaction } = useTxMonitor()
-
-	/* -----------------------------------
-   		Helpers
-	----------------------------------- */
-
-	const getSendTick = useCallback(async () => {
-		const TICK_MARGIN = 15
-		const tickInfo = await getTickInfo()
-		if (!tickInfo.data) {
-			throw new Error('Failed to get tick info')
-		}
-		return tickInfo.data.tick + TICK_MARGIN
-	}, [getTickInfo])
 
 	/* -----------------------------------
    		Query methods
@@ -221,9 +203,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 				throw new Error('Wallet not connected')
 			}
 
-			const futureTick = await getSendTick()
-
-			log({ formData: data, futureTick })
+			log({ formData: data })
 
 			const { encodedParams } = encodeParams(
 				{
@@ -242,7 +222,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 				selectedAccount.address,
 				QUTIL_CONFIG.ADDRESS,
 				QUTIL_CONFIG.POLL_CREATION_FEE,
-				futureTick,
+				undefined,
 				QUTIL_PROCEDURES.CREATE_POLL,
 				encodedParams
 			)
@@ -264,7 +244,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 				transactionId: sent.transactionId
 			}
 		},
-		[walletClient, selectedAccount, getSendTick, addPendingTransaction]
+		[walletClient, selectedAccount, addPendingTransaction]
 	)
 
 	const castVote = useCallback(
@@ -273,15 +253,13 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 				throw new Error('Wallet not connected')
 			}
 
-			const futureTick = await getSendTick()
-
 			const { encodedParams } = encodeParams(data, QUTIL_ABI.functions.vote.inputs)
 
 			const sent = await walletClient.sendTransaction(
 				selectedAccount.address,
 				QUTIL_CONFIG.ADDRESS,
 				QUTIL_CONFIG.VOTE_FEE,
-				futureTick,
+				undefined,
 				QUTIL_PROCEDURES.VOTE,
 				encodedParams
 			)
@@ -301,7 +279,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 				transactionId: sent.transactionId
 			}
 		},
-		[walletClient, selectedAccount, getSendTick, addPendingTransaction]
+		[walletClient, selectedAccount, addPendingTransaction]
 	)
 
 	const cancelPoll = useCallback(
@@ -316,13 +294,11 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 			const { encodedParams } = encodeParams(params, QUTIL_ABI.functions.cancelPoll.inputs)
 			log('cancelPoll - encodedParams', { encodedParams })
 
-			const futureTick = await getSendTick()
-
 			const sent = await walletClient.sendTransaction(
 				selectedAccount.address,
 				QUTIL_CONFIG.ADDRESS,
 				QUTIL_CONFIG.POLL_CANCELLATION_FEE,
-				futureTick,
+				undefined,
 				QUTIL_PROCEDURES.CANCEL_POLL,
 				encodedParams
 			)
@@ -344,7 +320,7 @@ export const useQUtilContract = (): UseQUtilContractReturn => {
 				transactionId: sent.transactionId
 			}
 		},
-		[walletClient, selectedAccount, getSendTick, addPendingTransaction]
+		[walletClient, selectedAccount, addPendingTransaction]
 	)
 
 	return {
