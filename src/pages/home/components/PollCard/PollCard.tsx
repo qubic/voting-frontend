@@ -148,6 +148,15 @@ function TransferVoteInstructions({ poll }: { poll: PollWithResults }) {
 		}
 	}, [poll.id, querySmartContract, getPollInfo, refresh])
 
+	// Same labels as VoteForm so users pick the matching option.
+	const isBinaryPoll =
+		!labels && !poll.results?.result?.some((votes, index) => index >= 2 && votes > 0)
+	const getOptionLabel = (option: number): string => {
+		if (labels?.[option]) return labels[option]
+		if (isBinaryPoll && option < 2) return `Option ${option} - ${option === 0 ? 'No' : 'Yes'}`
+		return `Option ${option}`
+	}
+
 	return (
 		<section className="bg-muted space-y-3 rounded-lg p-4" aria-label="Vote by transfer">
 			<h4 className="font-medium">Vote by transfer</h4>
@@ -200,10 +209,7 @@ function TransferVoteInstructions({ poll }: { poll: PollWithResults }) {
 										amount > 0 &&
 										(!labels || option in labels) && (
 											<tr key={option} className="border-t">
-												<td className="py-2">
-													Option {option}
-													{labels?.[option] ? ` — ${labels[option]}` : ''}
-												</td>
+												<td className="py-2">{getOptionLabel(option)}</td>
 												<td className="py-2 text-right whitespace-nowrap">
 													{amount.toLocaleString()} QU
 													<CopyButton
