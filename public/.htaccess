@@ -1,0 +1,10 @@
+# SPA fallback: the app uses BrowserRouter, so deep links like /create-poll
+# must serve index.html instead of Apache's 404.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
